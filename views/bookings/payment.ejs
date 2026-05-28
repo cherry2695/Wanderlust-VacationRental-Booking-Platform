@@ -1,0 +1,45 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="row mt-5 mb-5 justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card payment-card p-4">
+      <h2 class="fw-bold mb-2">Payment</h2>
+      <p class="text-muted mb-4">Complete your booking for <strong><%= booking.listingTitle %></strong>.</p>
+
+      <div class="scanner-box mb-4">
+        <div class="scanner-status">
+          <div class="scanner-dot"></div>
+          <span>Scan your payment QR</span>
+        </div>
+        <div class="scanner-screen">
+          <div class="scanner-grid"></div>
+          <p class="text-muted mb-0">Place your payment code inside the scanner to proceed.</p>
+        </div>
+      </div>
+
+      <div class="booking-summary-box mb-4">
+        <div class="summary-row">
+          <span>Booking</span>
+          <strong><%= booking.listingTitle %></strong>
+        </div>
+        <div class="summary-row">
+          <span>Dates</span>
+          <strong><%= new Date(booking.checkIn).toLocaleDateString('en-CA') %> - <%= new Date(booking.checkOut).toLocaleDateString('en-CA') %></strong>
+        </div>
+        <div class="summary-row">
+          <span>Guests</span>
+          <strong><%= booking.guests %></strong>
+        </div>
+        <div class="summary-row total-row">
+          <span>Total</span>
+          <strong>&#8377;<%= booking.totalPrice.toLocaleString('en-IN') %></strong>
+        </div>
+      </div>
+
+      <form action="/bookings/<%= booking._id %>/pay" method="POST">
+        <button class="btn btn-primary-gradient w-100 mb-3" type="submit">Pay & Confirm Booking</button>
+      </form>
+      <a href="/bookings" class="btn btn-outline-custom w-100">Back to My Bookings</a>
+    </div>
+  </div>
+</div>

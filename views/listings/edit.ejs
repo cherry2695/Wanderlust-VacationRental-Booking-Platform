@@ -1,0 +1,213 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+  <div class="row mt-4 mb-5">
+    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+      <!-- Back button -->
+      <div class="mb-3">
+        <a href="/listings/<%= listing._id %>" class="btn btn-outline-custom btn-sm">
+          <i class="fa-solid fa-chevron-left me-1"></i> Back to details
+        </a>
+      </div>
+
+      <!-- Form Card -->
+      <div class="card form-card">
+        <h3 class="form-title text-center mb-4">Edit Listing Details</h3>
+
+        <form
+          method="POST"
+          action="/listings/<%= listing._id %>?_method=PUT"
+          novalidate
+          class="needs-validation"
+          enctype="multipart/form-data"
+        >
+          <!-- TITLE -->
+          <div class="form-floating mb-3">
+            <input
+              id="title"
+              name="listing[title]"
+              value="<%= listing.title %>"
+              type="text"
+              class="form-control"
+              required
+            />
+            <label for="title">Title</label>
+            <div class="valid-feedback">Title looks good!</div>
+            <div class="invalid-feedback">Please enter a valid title.</div>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="form-floating mb-3">
+            <textarea
+              id="description"
+              name="listing[description]"
+              class="form-control"
+              style="height: 150px;"
+              required
+            ><%= listing.description.trim() %></textarea>
+            <label for="description">Description</label>
+            <div class="invalid-feedback">Please enter a short description.</div>
+          </div>
+
+          <!-- IMAGE PREVIEW & FILE UPLOAD -->
+          <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 text-center text-sm-start mb-2 mb-sm-0">
+              <span class="d-block text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">Current Image</span>
+              <img
+                src="<%= originalImageUrl %>"
+                alt="Original listing image"
+                style="height: 90px; width: 120px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color);"
+              />
+            </div>
+            <div class="col-sm-8">
+              <label for="image" class="form-label fw-bold" style="font-size: 0.85rem;">Upload New Image</label>
+              <input
+                id="image"
+                name="listing[image]"
+                type="file"
+                class="form-control"
+                accept="image/*"
+              />
+              <div class="form-text text-muted" style="font-size: 0.75rem;">Leave empty to keep the current image.</div>
+            </div>
+          </div>
+
+          <!-- PRICE + CATEGORY -->
+          <div class="row">
+            <!-- PRICE -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input
+                  id="price"
+                  name="listing[price]"
+                  value="<%= listing.price %>"
+                  type="number"
+                  class="form-control"
+                  min="0"
+                  required
+                />
+                <label for="price">Price per night (₹)</label>
+                <div class="invalid-feedback">Price should be a valid number.</div>
+              </div>
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <select
+                  id="category"
+                  name="listing[category]"
+                  class="form-select"
+                  required
+                >
+                  <option value="Trending" <%= listing.category === 'Trending' ? 'selected' : '' %>>Trending</option>
+                  <option value="Rooms" <%= listing.category === 'Rooms' ? 'selected' : '' %>>Rooms</option>
+                  <option value="Iconic Cities" <%= (listing.category === 'Iconic Cities' || listing.category === 'IconicCity') ? 'selected' : '' %>>Iconic City</option>
+                  <option value="Mountains" <%= listing.category === 'Mountains' ? 'selected' : '' %>>Mountains</option>
+                </select>
+                <label for="category">Category</label>
+                <div class="invalid-feedback">Please select a category.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LOCATION + COUNTRY -->
+          <div class="row">
+            <!-- LOCATION -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input
+                  id="location"
+                  name="listing[location]"
+                  value="<%= listing.location %>"
+                  type="text"
+                  class="form-control"
+                  required
+                />
+                <label for="location">Location</label>
+                <div class="invalid-feedback">Location should be valid.</div>
+              </div>
+            </div>
+
+            <!-- COUNTRY -->
+            <div class="col-md-6 mb-3">
+              <div class="form-floating">
+                <input
+                  id="country"
+                  name="listing[country]"
+                  value="<%= listing.country %>"
+                  type="text"
+                  class="form-control"
+                  required
+                />
+                <label for="country">Country</label>
+                <div class="invalid-feedback">Country name should be valid.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AMENITIES -->
+          <div class="mb-3">
+            <label class="form-label fw-bold" style="font-size: 0.95rem;">Amenities</label>
+            <div class="row g-2 mt-2">
+              <% const amenityOptions = [
+                ['wifi','High-speed Wi-Fi','fa-wifi'],
+                ['kitchen','Kitchen','fa-utensils'],
+                ['parking','Parking','fa-square-parking'],
+                ['air_conditioning','Air conditioning','fa-snowflake'],
+                ['pool','Pool','fa-swimming-pool'],
+                ['bbq','BBQ grill','fa-burger'],
+                ['workspace','Workspace','fa-laptop'],
+                ['pet_friendly','Pet friendly','fa-paw'],
+                ['fireplace','Fireplace','fa-fire']
+              ]; %>
+              <% amenityOptions.forEach(function(opt){ %>
+                <div class="col-6 col-md-4">
+                  <label class="form-check d-flex align-items-center gap-2">
+                    <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="<%= opt[0] %>" <%= listing.amenities && listing.amenities.includes(opt[0]) ? 'checked' : '' %>>
+                    <i class="fa-solid <%= opt[2] %> text-muted"></i>
+                    <span><%= opt[1] %></span>
+                  </label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <div class="d-grid mt-4">
+            <button class="btn btn-primary-gradient py-3">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  (function(){
+    const suggestions = {
+      Mountains: ['fireplace','hiking','valley_view','hot_water'],
+      'Iconic Cities': ['elevator','workspace','smart_tv','air_conditioning'],
+      Beach: ['ocean_view','pool','bbq'],
+      Rooms: ['wifi','kitchen','air_conditioning'],
+      Trending: ['wifi','kitchen','parking']
+    };
+
+    const categoryEl = document.getElementById('category');
+    const checkboxes = () => Array.from(document.querySelectorAll('input[name="listing[amenities][]"]'));
+
+    if (categoryEl) {
+      categoryEl.addEventListener('change', function(){
+        const val = categoryEl.value;
+        const rec = suggestions[val] || [];
+        // only auto check if user hasn't manually selected any
+        const anyChecked = checkboxes().some(cb => cb.checked);
+        if (!anyChecked) {
+          checkboxes().forEach(cb => {
+            cb.checked = rec.includes(cb.value);
+          });
+        }
+      });
+    }
+  })();
+</script>

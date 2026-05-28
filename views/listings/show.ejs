@@ -1,0 +1,511 @@
+<% layout("/layouts/boilerplate") %>
+
+  <div class="row mt-4 mb-5 px-md-3">
+    <!-- Title Section -->
+    <div class="col-12">
+      <h2 class="show-title"><%= listing.title %></h2>
+      <div class="show-subheader">
+        <div class="show-subheader-left">
+          <div class="rating-info">
+            <i class="fa-solid fa-star"></i>
+            <% if (listing.reviews && listing.reviews.length > 0) { %>
+              <% 
+                let total = 0;
+                for (let r of listing.reviews) {
+                  if (r.rating) total += r.rating;
+                }
+                let avg = (total / listing.reviews.length).toFixed(1);
+              %>
+              <span class="fw-bold"><%= avg %></span>
+              <span class="text-muted">&middot;</span>
+              <span class="text-decoration-underline fw-bold"><%= listing.reviews.length %> reviews</span>
+            <% } else { %>
+              <span class="fw-bold">New</span>
+            <% } %>
+          </div>
+          <span class="text-muted">&middot;</span>
+          <span>
+            <a href="#map" class="location-link"><%= listing.location %>, <%= listing.country %></a>
+          </span>
+        </div>
+
+        <div>
+          <!-- Back button -->
+          <a href="/listings" class="btn btn-outline-custom btn-sm">
+            <i class="fa-solid fa-chevron-left me-1"></i> Back to Explore
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Image Gallery -->
+    <div class="col-12">
+      <div class="show-gallery-container">
+        <img
+          src="<%= listing.image.url %>"
+          alt="<%= listing.title %>"
+        />
+      </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="col-12 col-lg-8 pe-lg-5">
+      <!-- Host Information -->
+      <div class="host-info-section">
+        <div>
+          <h3 class="host-title-text">
+            Entire home hosted by 
+            <%= listing.owner && listing.owner[0]
+              ? listing.owner[0].username
+              : "Owner" %>
+          </h3>
+          <p class="text-muted m-0" style="font-size: 0.9rem;">
+            4 guests &middot; 2 bedrooms &middot; 2 beds &middot; 1.5 baths
+          </p>
+        </div>
+        <div class="host-avatar">
+          <%= listing.owner && listing.owner[0]
+            ? listing.owner[0].username.charAt(0).toUpperCase()
+            : "O" %>
+        </div>
+      </div>
+
+      <!-- Property Highlights -->
+      <div class="highlights-list">
+        <div class="highlight-item">
+          <i class="fa-solid fa-laptop text-muted"></i>
+          <div>
+            <h4 class="highlight-title">Dedicated workspace</h4>
+            <p class="highlight-desc">A room with Wi-Fi that’s well-suited for working.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <i class="fa-solid fa-key text-muted"></i>
+          <div>
+            <h4 class="highlight-title">Self check-in</h4>
+            <p class="highlight-desc">Check yourself in with the smart lock keypad.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <i class="fa-solid fa-calendar-xmark text-muted"></i>
+          <div>
+            <h4 class="highlight-title">Free cancellation</h4>
+            <p class="highlight-desc">Cancel up to 48 hours before check-in for a full refund.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Listing Description -->
+      <div class="description-section">
+        <h4 class="fw-bold mb-3">About this place</h4>
+        <p class="description-text"><%= listing.description %></p>
+      </div>
+
+      <!-- Amenities Section -->
+      <div class="pb-4 border-bottom mb-4">
+        <h4 class="fw-bold mb-3">What this place offers</h4>
+        <div class="row row-cols-1 row-cols-sm-2 g-3">
+          <% 
+            const amenityMap = {
+              wifi: ['fa-wifi','High-speed Wi-Fi'],
+              kitchen: ['fa-utensils','Fully equipped Kitchen'],
+              parking: ['fa-square-parking','Free residential parking'],
+              netflix: ['fa-tv','HD TV with Netflix'],
+              air_conditioning: ['fa-snowflake','Air conditioning'],
+              fireplace: ['fa-fire','Fireplace'],
+              hiking: ['fa-person-hiking','Hiking trails'],
+              valley_view: ['fa-mountain-sun','Valley view'],
+              hot_water: ['fa-water','Hot water'],
+              ocean_view: ['fa-water-ladder','Ocean view'],
+              pool: ['fa-swimming-pool','Pool'],
+              bbq: ['fa-burger','BBQ grill'],
+              elevator: ['fa-elevator','Elevator'],
+              workspace: ['fa-laptop','Workspace'],
+              smart_tv: ['fa-tv','Smart TV'],
+              bonfire: ['fa-campground','Bonfire'],
+              garden: ['fa-seedling','Garden'],
+              pet_friendly: ['fa-paw','Pet friendly']
+            };
+
+            const amenities = listing.amenities && listing.amenities.length > 0 ? listing.amenities : [];
+          %>
+
+          <% if (amenities.length === 0) { %>
+            <% const defaults = ['wifi','kitchen','parking','air_conditioning']; %>
+            <% defaults.forEach(function(a){ %>
+              <div class="col d-flex align-items-center gap-3">
+                <i class="fa-solid <%= amenityMap[a][0] %> text-muted" style="font-size: 1.2rem; width: 24px;"></i>
+                <span><%= amenityMap[a][1] %></span>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <% amenities.forEach(function(a){ %>
+              <% const key = a.toString().toLowerCase().replace(/\s+/g,'_'); %>
+              <% const info = amenityMap[key] || ['fa-circle', '' + a]; %>
+              <div class="col d-flex align-items-center gap-3">
+                <i class="fa-solid <%= info[0] %> text-muted" style="font-size: 1.2rem; width: 24px;"></i>
+                <span><%= info[1] %></span>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Edit/Delete Action Buttons for Listing Owner -->
+      <% if (
+        currUser &&
+        listing.owner &&
+        listing.owner[0] &&
+        listing.owner[0]._id.equals(currUser._id)
+      ) { %>
+        <div class="d-flex gap-3 mb-4 mt-2">
+          <a
+            href="/listings/<%= listing._id %>/edit"
+            class="btn btn-outline-custom px-4"
+          >
+            <i class="fa-solid fa-pen-to-square me-2"></i> Edit Details
+          </a>
+          <form
+            method="POST"
+            action="/listings/<%= listing._id %>?_method=DELETE"
+            style="display: inline;"
+            onsubmit="return confirm('Are you sure you want to delete this listing?');"
+          >
+            <button class="btn btn-danger px-4" style="background-color: #c1121f; border: none;">
+              <i class="fa-solid fa-trash me-2"></i> Delete Property
+            </button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Booking Card Column (Right Side on Desktop) -->
+    <div class="col-12 col-lg-4 mt-4 mt-lg-0">
+      <form class="booking-widget-card" action="/listings/<%= listing._id %>/book" method="POST">
+        <div class="booking-header">
+          <div class="booking-price">
+            <span class="booking-price-num">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+            <span class="text-muted" style="font-size: 0.9rem;">/ night</span>
+          </div>
+          <div>
+            <span style="font-size: 0.85rem; font-weight: 600;">
+              <i class="fa-solid fa-star text-warning me-1"></i>
+              <% if (listing.reviews && listing.reviews.length > 0) { %>
+                <% 
+                  let total = 0;
+                  for (let r of listing.reviews) {
+                    if(r.rating) total += r.rating;
+                  }
+                  let avg = (total / listing.reviews.length).toFixed(1);
+                %>
+                <%= avg %> &middot; <span class="text-muted"><%= listing.reviews.length %> reviews</span>
+              <% } else { %>
+                New
+              <% } %>
+            </span>
+          </div>
+        </div>
+
+        <!-- Booking Date selectors (form inputs) -->
+        <div class="booking-inputs-grid">
+          <div class="booking-input-item booking-date-item">
+            <label class="booking-label" for="checkIn">Check-In</label>
+            <input
+              type="date"
+              id="checkIn"
+              name="checkIn"
+              class="booking-input-control"
+              min="<%= minCheckIn %>"
+              required
+            />
+          </div>
+          <div class="booking-input-item booking-date-item">
+            <label class="booking-label" for="checkOut">Check-Out</label>
+            <input
+              type="date"
+              id="checkOut"
+              name="checkOut"
+              class="booking-input-control"
+              min="<%= minCheckOut %>"
+              required
+            />
+          </div>
+          <div class="booking-input-item booking-guests-item">
+            <label class="booking-label" for="guests">Guests</label>
+            <select id="guests" name="guests" class="booking-input-control" required>
+              <% for (let i = 2; i <= 8; i++) { %>
+                <option value="<%= i %>"><%= i %> guest<%= i > 1 ? 's' : '' %></option>
+              <% } %>
+            </select>
+          </div>
+        </div>
+
+        <button class="booking-btn" type="submit">
+          Reserve
+        </button>
+        <p class="booking-disclaimer">You won't be charged yet</p>
+
+        <!-- Pricing calculation details -->
+        <div class="booking-pricing-list">
+          <div class="pricing-row">
+            <span class="pricing-label">&#8377;<%= listing.price.toLocaleString("en-IN") %> x 5 nights</span>
+            <span class="pricing-val">&#8377; <%= (listing.price * 5).toLocaleString("en-IN") %></span>
+          </div>
+          <div class="pricing-row">
+            <span class="pricing-label">Cleaning fee</span>
+            <span class="pricing-val">&#8377;250</span>
+          </div>
+          <div class="pricing-row">
+            <span class="pricing-label">Wanderlust service fee</span>
+            <span class="pricing-val">&#8377;450</span>
+          </div>
+        </div>
+
+        <div class="pricing-total-row">
+          <span>Total before taxes</span>
+          <span>&#8377;<%= (listing.price * 5 + 700).toLocaleString("en-IN") %></span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Divider -->
+    <div class="col-12"><hr class="my-4" /></div>
+
+    <!-- Reviews Section -->
+    <div class="col-12">
+      <!-- Ratings statistics -->
+      <div class="review-stats-row">
+        <i class="fa-solid fa-star text-warning"></i>
+        <% if (listing.reviews && listing.reviews.length > 0) { %>
+          <% 
+            let total = 0;
+            for (let r of listing.reviews) {
+              if (r.rating) total += r.rating;
+            }
+            let avg = (total / listing.reviews.length).toFixed(1);
+          %>
+          <span><%= avg %> &middot; <%= listing.reviews.length %> reviews</span>
+        <% } else { %>
+          <span>No reviews yet</span>
+        <% } %>
+      </div>
+
+      <% if (listing.reviews && listing.reviews.length > 0) { %>
+        <!-- Mock ratings breakdown for premium experience -->
+        <div class="row row-cols-1 row-cols-sm-2 g-4 mb-5">
+          <div class="col d-flex align-items-center justify-content-between">
+            <span class="text-muted" style="font-size: 0.9rem;">Cleanliness</span>
+            <div class="d-flex align-items-center gap-2" style="width: 60%;">
+              <div class="progress flex-grow-1" style="height: 6px;">
+                <div class="progress-bar bg-dark" style="width: 95%"></div>
+              </div>
+              <span class="fw-bold" style="font-size: 0.8rem; width: 20px;">4.8</span>
+            </div>
+          </div>
+          <div class="col d-flex align-items-center justify-content-between">
+            <span class="text-muted" style="font-size: 0.9rem;">Communication</span>
+            <div class="d-flex align-items-center gap-2" style="width: 60%;">
+              <div class="progress flex-grow-1" style="height: 6px;">
+                <div class="progress-bar bg-dark" style="width: 98%"></div>
+              </div>
+              <span class="fw-bold" style="font-size: 0.8rem; width: 20px;">4.9</span>
+            </div>
+          </div>
+          <div class="col d-flex align-items-center justify-content-between">
+            <span class="text-muted" style="font-size: 0.9rem;">Check-in</span>
+            <div class="d-flex align-items-center gap-2" style="width: 60%;">
+              <div class="progress flex-grow-1" style="height: 6px;">
+                <div class="progress-bar bg-dark" style="width: 96%"></div>
+              </div>
+              <span class="fw-bold" style="font-size: 0.8rem; width: 20px;">4.8</span>
+            </div>
+          </div>
+          <div class="col d-flex align-items-center justify-content-between">
+            <span class="text-muted" style="font-size: 0.9rem;">Value</span>
+            <div class="d-flex align-items-center gap-2" style="width: 60%;">
+              <div class="progress flex-grow-1" style="height: 6px;">
+                <div class="progress-bar bg-dark" style="width: 92%"></div>
+              </div>
+              <span class="fw-bold" style="font-size: 0.8rem; width: 20px;">4.7</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reviews Grid -->
+        <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+          <% for (let review of listing.reviews) { %>
+            <div class="col">
+              <div class="card review-card h-100">
+                <div class="card-body p-0">
+                  <div class="review-card-header">
+                    <div class="reviewer-avatar">
+                      <%= review.author
+                        ? review.author.username.charAt(0).toUpperCase()
+                        : "A" %>
+                    </div>
+                    <div>
+                      <h5 class="reviewer-name">
+                        <%= review.author
+                          ? review.author.username
+                          : "Anonymous User" %>
+                      </h5>
+                      <span class="review-date">
+                        <%= review.createdAt ? new Date(review.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long' }) : "Recently" %>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Starability Star rating output display -->
+                  <p
+                    class="starability-result card-text mb-2"
+                    data-rating="<%= review.rating %>"
+                  ></p>
+
+                  <p class="review-content-text">
+                    <%= review.comment %>
+                  </p>
+
+                  <!-- Delete Review Button (For Author only) -->
+                  <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                    <form
+                      class="mt-2"
+                      method="POST"
+                      action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                    >
+                      <button class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 2px 8px;">
+                        <i class="fa-solid fa-trash-can me-1"></i> Delete
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+
+      <!-- Leave a Review Form (For logged in users) -->
+      <% const isOwner = currUser && listing.owner && listing.owner[0] && listing.owner[0]._id && listing.owner[0]._id.equals(currUser._id); %>
+      <% if (currUser && !isOwner) { %>
+        <div class="card form-card mb-5">
+          <h4 class="form-title">Leave a Review</h4>
+          
+          <form
+            action="/listings/<%= listing._id %>/reviews"
+            method="POST"
+            novalidate
+            class="needs-validation"
+          >
+            <!-- Rating Star selector -->
+            <div class="mb-3">
+              <label class="form-label fw-bold" style="font-size: 0.95rem;">Rating</label>
+              <fieldset class="starability-slot">
+                <input
+                  type="radio"
+                  id="no-rate"
+                  class="input-no-rate"
+                  name="review[rating]"
+                  value="1"
+                  checked
+                  aria-label="No rating."
+                />
+                <input
+                  type="radio"
+                  id="first-rate1"
+                  name="review[rating]"
+                  value="1"
+                />
+                <label for="first-rate1" title="Terrible">1 star</label>
+                <input
+                  type="radio"
+                  id="first-rate2"
+                  name="review[rating]"
+                  value="2"
+                />
+                <label for="first-rate2" title="Not good">2 stars</label>
+                <input
+                  type="radio"
+                  id="first-rate3"
+                  name="review[rating]"
+                  value="3"
+                />
+                <label for="first-rate3" title="Average">3 stars</label>
+                <input
+                  type="radio"
+                  id="first-rate4"
+                  name="review[rating]"
+                  value="4"
+                />
+                <label for="first-rate4" title="Very good">4 stars</label>
+                <input
+                  type="radio"
+                  id="first-rate5"
+                  name="review[rating]"
+                  value="5"
+                />
+                <label for="first-rate5" title="Amazing">5 stars</label>
+              </fieldset>
+            </div>
+
+            <!-- Comment Description -->
+            <div class="form-floating mb-3">
+              <textarea
+                name="review[comment]"
+                id="comment"
+                class="form-control"
+                placeholder="Share your experience..."
+                style="height: 120px;"
+                required
+              ></textarea>
+              <label for="comment">Comments</label>
+              <div class="invalid-feedback">
+                Please add some comments for review.
+              </div>
+            </div>
+
+            <button class="btn btn-primary-gradient px-4">
+              Submit Review
+            </button>
+          </form>
+        </div>
+      <% } else if (isOwner) { %>
+        <div class="alert alert-light border text-center py-4 mb-5">
+          <p class="m-0 text-muted">Owners cannot review their own listings.</p>
+        </div>
+      <% } else { %>
+        <div class="alert alert-light border text-center py-4 mb-5">
+          <p class="m-0 text-muted">You must be logged in to leave a review.</p>
+          <a href="/login" class="btn btn-sm btn-outline-custom mt-2">Log in</a>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Divider -->
+    <div class="col-12"><hr class="my-3" /></div>
+
+    <!-- Map Visualization Section -->
+    <div class="col-12 mb-4" id="map-section">
+      <h3 class="fw-bold">Where you'll be</h3>
+      <p class="text-muted" style="font-size: 0.9rem; margin-top: -4px;"><%= listing.location %>, <%= listing.country %></p>
+      <div class="map-card">
+        <div class="map-title-overlay">
+          <div>
+            <p class="map-title-label mb-1">Listing</p>
+            <h4 class="map-title-text"><%= listing.title %></h4>
+          </div>
+          <span class="text-muted"><%= listing.location %>, <%= listing.country %></span>
+        </div>
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Scripts -->
+  <script>
+    const listing = JSON.parse(
+      decodeURIComponent(
+        "<%= encodeURIComponent(JSON.stringify(listing)) %>"
+      )
+    );
+  </script>
+  <script src="/js/map.js"></script>

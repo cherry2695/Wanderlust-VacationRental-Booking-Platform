@@ -1,0 +1,79 @@
+<% layout('/layouts/boilerplate') %>
+<body>
+  <div class="row mt-5 mb-5">
+    <div class="col-12 col-md-8 offset-md-2 col-lg-5 offset-lg-3.5 mx-auto">
+      <!-- Signup Card Box -->
+      <div class="card form-card">
+        <h3 class="form-title text-center mb-4">Signup on Wanderlust</h3>
+
+        <form
+          method="POST"
+          action="/signup"
+          novalidate
+          class="needs-validation"
+        >
+          <!-- Username Input -->
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              name="username"
+              id="username"
+              class="form-control"
+              placeholder="Enter username"
+              required
+            />
+            <label for="username">Username</label>
+            <div class="valid-feedback">Username looks good!</div>
+            <div class="invalid-feedback">Please enter a username.</div>
+          </div>
+
+          <!-- Email Input -->
+          <div class="form-floating mb-3">
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="form-control"
+              placeholder="Enter email"
+              required
+            />
+            <label for="email">Email Address</label>
+            <div class="valid-feedback">Email looks good!</div>
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+
+          <!-- Password Input -->
+          <div class="form-floating mb-3">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="form-control"
+              placeholder="Enter password"
+              required
+            />
+            <label for="password">Password</label>
+            <div class="valid-feedback">Password looks good!</div>
+            <div class="invalid-feedback">Please enter a password.</div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="d-grid mt-4">
+            <button class="btn btn-primary-gradient py-3">
+              Create Account
+            </button>
+          </div>
+        </form>
+
+        <hr class="my-4" />
+
+        <div class="text-center">
+          <p class="text-muted m-0" style="font-size: 0.9rem;">
+            Already have an account? 
+            <a href="/login" class="text-decoration-underline fw-bold" style="color: var(--primary-color);">Log in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

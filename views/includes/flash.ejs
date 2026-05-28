@@ -1,0 +1,33 @@
+<% if(success && success.length){ %>
+<div
+  class="alert alert-success alert-dismissible fade show col-12 col-md-6 offset-md-3 mt-3"
+  role="alert"
+  style="border-radius: var(--border-radius-md); box-shadow: var(--card-shadow); border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; font-weight: 600; font-size: 0.9rem;"
+>
+  <i class="fa-solid fa-circle-check me-2"></i>
+  <%=success%>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+<% } %>
+
+<% if(error && error.length){ %>
+<div
+  class="alert alert-danger alert-dismissible fade show col-12 col-md-6 offset-md-3 mt-3"
+  role="alert"
+  style="border-radius: var(--border-radius-md); box-shadow: var(--card-shadow); border: 1px solid #f5c6cb; background-color: #f8d7da; color: #721c24; font-weight: 600; font-size: 0.9rem;"
+>
+  <i class="fa-solid fa-triangle-exclamation me-2"></i>
+  <%=error%>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+<% } %>

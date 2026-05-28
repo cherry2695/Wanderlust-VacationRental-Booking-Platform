@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-md sticky-top">
+  <div class="container">
+    <!-- Brand Logo & Name -->
+    <a class="navbar-brand" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      <span>Wanderlust</span>
+    </a>
+
+    <!-- Navbar Toggler for Mobile -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarContent"
+      aria-controls="navbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Content -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- Centered Rounded Search Bar -->
+      <div class="navbar-nav mx-auto mt-2 mt-md-0">
+        <form
+          class="nav-search-bar"
+          role="search"
+          method="GET"
+          action="/listings/search"
+        >
+          <input
+            type="text"
+            name="search"
+            placeholder="Search destinations"
+            required
+          />
+          <button class="nav-search-btn" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Menu: Host link & User Dropdown -->
+      <div class="nav-menu-right mt-3 mt-md-0 ms-auto">
+        <a class="host-link d-none d-md-inline-block" href="/listings/new">
+          Wanderlust your home
+        </a>
+        
+        <div class="dropdown">
+          <button
+            class="user-dropdown-btn"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-bars"></i>
+            <% if (currUser) { %>
+              <div class="user-avatar-placeholder">
+                <%= currUser.username.charAt(0).toUpperCase() %>
+              </div>
+            <% } else { %>
+              <i class="fa-solid fa-circle-user"></i>
+            <% } %>
+          </button>
+          
+          <ul class="dropdown-menu dropdown-menu-end">
+            <% if (!currUser) { %>
+              <li><a class="dropdown-item fw-bold-custom" href="/signup">Sign up</a></li>
+              <li><a class="dropdown-item" href="/login">Log in</a></li>
+            <% } else { %>
+              <li><a class="dropdown-item fw-bold-custom" href="/listings/new">Wanderlust your home</a></li>
+              <li><a class="dropdown-item" href="/listings">Explore listings</a></li>
+              <li><a class="dropdown-item" href="/bookings">My Bookings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/logout">Log out</a></li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

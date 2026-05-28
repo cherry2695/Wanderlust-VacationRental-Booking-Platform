@@ -1,0 +1,32 @@
+<footer>
+  <div class="container">
+    <div class="footer-container">
+      <!-- Social Media Icons (Left/Center) -->
+      <div class="footer-socials">
+        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin-in"></i>
+        </a>
+        <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </div>
+
+      <!-- Copyright Brand info (Center) -->
+      <div class="footer-brand">
+        &copy; <%= new Date().getFullYear() %> Wanderlust Private Limited
+      </div>
+
+      <!-- Links (Right) -->
+      <div class="footer-links">
+        <a class="<%= currentPath === '/privacy' ? 'active-link' : '' %>" href="/privacy">Privacy Policy</a>
+        <a class="<%= currentPath === '/terms' ? 'active-link' : '' %>" href="/terms">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>

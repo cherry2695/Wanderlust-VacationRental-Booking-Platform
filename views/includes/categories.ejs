@@ -1,0 +1,59 @@
+<% 
+  let active = typeof activeCategory !== 'undefined' ? activeCategory : null; 
+%>
+<div class="categories-container">
+  <!-- Horizontally scrollable list -->
+  <div class="categories-scroll">
+    <a href="/listings/category/Trending" class="category-item <%= active === 'Trending' ? 'active' : '' %>">
+      <i class="fa-solid fa-fire"></i>
+      <span>Trending</span>
+    </a>
+    <a href="/listings/category/Rooms" class="category-item <%= active === 'Rooms' ? 'active' : '' %>">
+      <i class="fa-solid fa-bed"></i>
+      <span>Rooms</span>
+    </a>
+    <a href="/listings/category/IconicCity" class="category-item <%= (active === 'IconicCity' || active === 'Iconic Cities') ? 'active' : '' %>">
+      <i class="fa-solid fa-mountain-city"></i>
+      <span>Iconic Cities</span>
+    </a>
+    <a href="/listings/category/Mountains" class="category-item <%= active === 'Mountains' ? 'active' : '' %>">
+      <i class="fa-solid fa-mountain"></i>
+      <span>Mountains</span>
+    </a>
+    <a href="/listings/category/Beach" class="category-item <%= active === 'Beach' ? 'active' : '' %>">
+      <i class="fa-solid fa-umbrella-beach"></i>
+      <span>Beach</span>
+    </a>
+    <a href="/listings/category/Camping" class="category-item <%= active === 'Camping' ? 'active' : '' %>">
+      <i class="fa-solid fa-tent"></i>
+      <span>Camping</span>
+    </a>
+    <a href="/listings/category/Pools" class="category-item <%= active === 'Pools' ? 'active' : '' %>">
+      <i class="fa-solid fa-person-swimming"></i>
+      <span>Pools</span>
+    </a>
+    <a href="/listings/category/Farms" class="category-item <%= active === 'Farms' ? 'active' : '' %>">
+      <i class="fa-solid fa-cow"></i>
+      <span>Farms</span>
+    </a>
+    <a href="/listings/category/Cabins" class="category-item <%= active === 'Cabins' ? 'active' : '' %>">
+      <i class="fa-solid fa-house-chimney"></i>
+      <span>Cabins</span>
+    </a>
+  </div>
+
+  <!-- Tax Switch Toggle -->
+  <div class="tax-toggle-box">
+    <div class="form-check form-switch form-check-reverse m-0">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="flexSwitchCheckDefault"
+      />
+      <label class="form-check-label" for="flexSwitchCheckDefault">
+        Display total after taxes
+      </label>
+    </div>
+  </div>
+</div>

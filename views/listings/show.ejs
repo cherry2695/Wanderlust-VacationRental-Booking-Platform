@@ -217,6 +217,7 @@
               class="booking-input-control"
               min="<%= minCheckIn %>"
               required
+              style="appearance:none;-webkit-appearance:none;width:100%;background:transparent;border:none;outline:none;font-size:0.93rem;font-weight:500;color:#222;cursor:pointer;padding:0;"
             />
           </div>
           <div class="booking-input-item booking-date-item">
@@ -228,11 +229,13 @@
               class="booking-input-control"
               min="<%= minCheckOut %>"
               required
+              style="appearance:none;-webkit-appearance:none;width:100%;background:transparent;border:none;outline:none;font-size:0.93rem;font-weight:500;color:#222;cursor:pointer;padding:0;"
             />
           </div>
           <div class="booking-input-item booking-guests-item">
             <label class="booking-label" for="guests">Guests</label>
-            <select id="guests" name="guests" class="booking-input-control" required>
+            <select id="guests" name="guests" class="booking-input-control" required
+              style="appearance:none;-webkit-appearance:none;background:transparent;border:none;outline:none;width:100%;font-size:0.93rem;font-weight:500;color:#222;cursor:pointer;padding:0;">
               <% for (let i = 2; i <= 8; i++) { %>
                 <option value="<%= i %>"><%= i %> guest<%= i > 1 ? 's' : '' %></option>
               <% } %>
@@ -487,7 +490,7 @@
     <div class="col-12 mb-4" id="map-section">
       <h3 class="fw-bold">Where you'll be</h3>
       <p class="text-muted" style="font-size: 0.9rem; margin-top: -4px;"><%= listing.location %>, <%= listing.country %></p>
-      <div class="map-card">
+      <div class="map-card" style="border-radius:var(--border-radius-lg);overflow:hidden;border:1px solid var(--border-color);">
         <div class="map-title-overlay">
           <div>
             <p class="map-title-label mb-1">Listing</p>
@@ -495,7 +498,8 @@
           </div>
           <span class="text-muted"><%= listing.location %>, <%= listing.country %></span>
         </div>
-        <div id="map"></div>
+        <!-- Map container: top radius 0 so it joins header seamlessly -->
+        <div id="map" style="border-top-left-radius:0;border-top-right-radius:0;"></div>
       </div>
     </div>
   </div>

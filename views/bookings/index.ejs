@@ -2,50 +2,86 @@
 
 <div class="row mt-5 mb-5">
   <div class="col-12">
-    <h2 class="fw-bold mb-3">My Bookings</h2>
+    <h2 class="fw-bold mb-4">
+      <i class="fa-solid fa-calendar-check me-2" style="color:var(--primary-color);"></i>
+      My Bookings
+    </h2>
+
     <% if (bookings.length === 0) { %>
-      <div class="alert alert-light border">You have no bookings yet. Reserve a stay to see it here.</div>
-    <% } %>
-    <div class="row row-cols-1 g-4">
-      <% for (let booking of bookings) { %>
-        <div class="col">
-          <div class="card booking-summary-card p-4">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <h4 class="mb-1"><%= booking.listingTitle %></h4>
-                <p class="text-muted mb-0"><%= booking.listingLocation %></p>
+      <div class="text-center py-5">
+        <i class="fa-solid fa-calendar-xmark" style="font-size:3rem;color:var(--border-color);"></i>
+        <h5 class="mt-3 text-muted">No bookings yet</h5>
+        <p class="text-muted mb-4" style="font-size:0.9rem;">Reserve a stay to see your bookings here.</p>
+        <a href="/listings" class="btn btn-primary-gradient px-4">Explore Listings</a>
+      </div>
+    <% } else { %>
+      <div class="row row-cols-1 g-4">
+        <% for (let booking of bookings) { %>
+          <div class="col">
+            <div class="card booking-summary-card p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                <div>
+                  <h4 class="mb-1"><%= booking.listingTitle %></h4>
+                  <p class="text-muted mb-0">
+                    <i class="fa-solid fa-location-dot me-1"></i>
+                    <%= booking.listingLocation %>
+                  </p>
+                </div>
+                <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning text-dark' %> fs-6 px-3 py-2">
+                  <%= booking.status === 'confirmed' ? '✓ Confirmed' : '⏳ Pending' %>
+                </span>
               </div>
-              <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning' %>">
-                <%= booking.status === 'confirmed' ? 'Confirmed' : 'Pending' %>
-              </span>
-            </div>
-            <div class="row gx-3 gy-2 align-items-center mb-3">
-              <div class="col-sm-6 col-lg-3">
-                <span class="booking-summary-label">Check-in</span>
-                <p class="booking-summary-value"><%= new Date(booking.checkIn).toLocaleDateString('en-CA') %></p>
+
+              <div class="row gx-3 gy-2 align-items-center mb-3">
+                <div class="col-sm-6 col-lg-3">
+                  <span class="booking-summary-label">Check-in</span>
+                  <p class="booking-summary-value">
+                    <%= new Date(booking.checkIn).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                  </p>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                  <span class="booking-summary-label">Check-out</span>
+                  <p class="booking-summary-value">
+                    <%= new Date(booking.checkOut).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                  </p>
+                </div>
+                <div class="col-sm-6 col-lg-2">
+                  <span class="booking-summary-label">Guests</span>
+                  <p class="booking-summary-value"><%= booking.guests %></p>
+                </div>
+                <div class="col-sm-6 col-lg-2">
+                  <span class="booking-summary-label">Nights</span>
+                  <p class="booking-summary-value"><%= booking.nights %></p>
+                </div>
+                <div class="col-sm-6 col-lg-2 text-lg-end">
+                  <span class="booking-summary-label">Total Paid</span>
+                  <p class="booking-summary-value fw-bold" style="color:var(--primary-color);">
+                    &#8377;<%= booking.totalPrice.toLocaleString('en-IN') %>
+                  </p>
+                </div>
               </div>
-              <div class="col-sm-6 col-lg-3">
-                <span class="booking-summary-label">Check-out</span>
-                <p class="booking-summary-value"><%= new Date(booking.checkOut).toLocaleDateString('en-CA') %></p>
+
+              <div class="d-flex flex-wrap gap-2">
+                <% if (booking.listing && booking.listing._id) { %>
+                  <a href="/listings/<%= booking.listing._id %>" class="btn btn-outline-custom btn-sm">
+                    <i class="fa-solid fa-eye me-1"></i> View Listing
+                  </a>
+                <% } else { %>
+                  <span class="btn btn-outline-secondary btn-sm disabled">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i> Listing no longer exists
+                  </span>
+                <% } %>
+
+                <% if (booking.status === 'pending') { %>
+                  <a href="/bookings/<%= booking._id %>/payment" class="btn btn-primary-gradient btn-sm">
+                    <i class="fa-solid fa-credit-card me-1"></i> Complete Payment
+                  </a>
+                <% } %>
               </div>
-              <div class="col-sm-6 col-lg-2">
-                <span class="booking-summary-label">Guests</span>
-                <p class="booking-summary-value"><%= booking.guests %></p>
-              </div>
-              <div class="col-sm-6 col-lg-4 text-lg-end">
-                <span class="booking-summary-label">Total</span>
-                <p class="booking-summary-value fw-bold">&#8377;<%= booking.totalPrice.toLocaleString('en-IN') %></p>
-              </div>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-              <a href="/listings/<%= booking.listing %>" class="btn btn-outline-custom btn-sm">View Listing</a>
-              <% if (booking.status === 'pending') { %>
-                <a href="/bookings/<%= booking._id %>/payment" class="btn btn-primary-gradient btn-sm">Complete Payment</a>
-              <% } %>
             </div>
           </div>
-        </div>
-      <% } %>
-    </div>
+        <% } %>
+      </div>
+    <% } %>
   </div>
 </div>

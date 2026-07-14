@@ -9,8 +9,8 @@ let listingSchema = new Schema({
   },
   description: String,
   image: {
-    url: String,
-    filename: String,
+    url: { type: String, default: '' },
+    filename: { type: String, default: '' },
   },
   price: Number,
   location: String,
@@ -27,6 +27,7 @@ let listingSchema = new Schema({
       ref: "Review",
     },
   ],
+  // owner stored as array of ObjectIds for backward compat with existing data
   owner: [
     {
       type: Schema.Types.ObjectId,
@@ -35,13 +36,12 @@ let listingSchema = new Schema({
   ],
   geometry: {
     type: {
-      type: String, // Don't do `{ location: { type: String } }`
-      enum: ["Point"], // 'location.type' must be 'Point'
-      required: true,
+      type: String,
+      enum: ["Point"],
+      // NOT required — will be filled after geocoding, fallback handled in routes
     },
     coordinates: {
       type: [Number],
-      required: true,
     },
   },
 });

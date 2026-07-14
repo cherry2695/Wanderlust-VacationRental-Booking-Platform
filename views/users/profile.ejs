@@ -1,0 +1,447 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="profile-page-wrapper">
+
+  <!-- ===== Profile Hero Card ===== -->
+  <div class="profile-hero-card mb-5">
+    <!-- Gradient Banner -->
+    <div class="profile-banner">
+      <div class="profile-banner-pattern"></div>
+    </div>
+
+    <!-- Avatar — absolutely positioned to overlap banner -->
+    <div class="profile-avatar-absolute">
+      <% if (profileUser.profileImage && profileUser.profileImage.url) { %>
+        <img src="<%= profileUser.profileImage.url %>" alt="Profile" class="profile-avatar-img" />
+      <% } else { %>
+        <div class="profile-avatar-initial">
+          <%= profileUser.username.charAt(0).toUpperCase() %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Profile Info Body — below avatar -->
+    <div class="profile-info-body">
+      <div class="profile-text-block">
+        <h2 class="profile-display-name"><%= profileUser.username %></h2>
+        <p class="profile-display-email">
+          <i class="fa-regular fa-envelope"></i>
+          <%= profileUser.email %>
+        </p>
+      </div>
+      <div class="profile-hero-actions">
+        <a href="/profile/edit" class="btn btn-outline-custom btn-sm">
+          <i class="fa-solid fa-pen-to-square me-1"></i>Edit Profile
+        </a>
+        <a href="/listings/new" class="btn btn-primary-gradient btn-sm">
+          <i class="fa-solid fa-plus me-1"></i>Add Listing
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Stats Row ===== -->
+  <div class="row g-3 mb-5">
+    <div class="col-4">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-house"></i></div>
+        <div class="stat-number"><%= listings.length %></div>
+        <div class="stat-label">Listings</div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="stat-number"><%= bookings.length %></div>
+        <div class="stat-label">Bookings</div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-number"><%= reviews.length %></div>
+        <div class="stat-label">Reviews</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== My Listings ===== -->
+  <div class="profile-section mb-5">
+    <div class="profile-section-header">
+      <h4 class="profile-section-title">My Listings</h4>
+      <a href="/listings/new" class="profile-section-link">+ Add New</a>
+    </div>
+
+    <% if (listings.length > 0) { %>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <% for (let listing of listings) { %>
+          <div class="col">
+            <a href="/listings/<%= listing._id %>" class="listing-link">
+              <div class="card listing-card h-100">
+                <div class="card-img-container" style="aspect-ratio:16/10;">
+                  <img src="<%= optimizeCloudinary(listing.image.url, 400) %>" alt="<%= listing.title %>" loading="lazy" />
+                  <% if (listing.category) { %>
+                    <span class="card-category-badge"><%= listing.category %></span>
+                  <% } %>
+                </div>
+                <div class="card-body card-body-custom">
+                  <div class="card-title-text fw-bold"><%= listing.title %></div>
+                  <div class="card-location-text"><%= listing.location %>, <%= listing.country %></div>
+                  <div class="card-price-row mt-1">
+                    <span class="card-price-num">&#8377;<%= listing.price.toLocaleString('en-IN') %></span>
+                    <span style="font-size:0.82rem;color:var(--muted-text);"> / night</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="profile-empty-state">
+        <i class="fa-solid fa-house-circle-xmark"></i>
+        <p>No listings yet. <a href="/listings/new">Create your first listing</a></p>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- ===== My Bookings ===== -->
+  <% if (bookings.length > 0) { %>
+  <div class="profile-section mb-5">
+    <div class="profile-section-header">
+      <h4 class="profile-section-title">My Bookings</h4>
+      <a href="/bookings" class="profile-section-link">View All</a>
+    </div>
+    <div class="profile-bookings-list">
+      <% for (let booking of bookings) { %>
+        <div class="profile-booking-row">
+          <div class="profile-booking-icon">
+            <i class="fa-solid fa-bed"></i>
+          </div>
+          <div class="profile-booking-info">
+            <div class="profile-booking-title"><%= booking.listingTitle %></div>
+            <div class="profile-booking-meta">
+              <%= new Date(booking.checkIn).toLocaleDateString('en-IN', {day:'numeric', month:'short'}) %>
+              &rarr;
+              <%= new Date(booking.checkOut).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+              &middot; <%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %>
+            </div>
+          </div>
+          <div class="profile-booking-right">
+            <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning text-dark' %>">
+              <%= booking.status === 'confirmed' ? 'Confirmed' : 'Pending' %>
+            </span>
+            <div class="profile-booking-price">&#8377;<%= booking.totalPrice.toLocaleString('en-IN') %></div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+
+</div>
+
+<style>
+/* =============================
+   PROFILE PAGE WRAPPER
+   ============================= */
+.profile-page-wrapper {
+  max-width: 960px;
+  margin: 40px auto 60px;
+  padding: 0 4px;
+}
+
+/* =============================
+   PROFILE HERO CARD
+   ============================= */
+.profile-hero-card {
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  overflow: visible; /* allow avatar to overflow */
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+}
+
+/* Banner */
+.profile-banner {
+  height: 160px;
+  background: linear-gradient(135deg, #FF385C 0%, #c01652 45%, #7b0d4e 100%);
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-banner-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 40%);
+}
+
+/* Avatar — sits on the border between banner and body */
+.profile-avatar-absolute {
+  position: absolute;
+  top: calc(160px - 56px); /* banner height minus half avatar size */
+  left: 36px;
+  z-index: 10;
+}
+
+.profile-avatar-img {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+  display: block;
+}
+
+.profile-avatar-initial {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF385C, #bd1e59);
+  color: #fff;
+  font-size: 2.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+}
+
+/* Info body — below the banner, left padding clears the avatar */
+.profile-info-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  /* Left padding: avatar left offset + avatar width + gap */
+  padding: 72px 36px 28px 168px;
+}
+
+/* Name + email block */
+.profile-text-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-display-name {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--dark-text);
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.profile-display-email {
+  font-size: 0.88rem;
+  color: var(--muted-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Action buttons */
+.profile-hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding-bottom: 2px;
+}
+
+/* =============================
+   STAT CARDS
+   ============================= */
+.stat-card {
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px 16px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  text-align: center;
+  transition: var(--transition-smooth);
+}
+
+.stat-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--dark-text);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-text);
+  margin-top: 6px;
+}
+
+/* =============================
+   PROFILE SECTIONS
+   ============================= */
+.profile-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.profile-section-title {
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: var(--dark-text);
+  margin: 0;
+}
+
+.profile-section-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.profile-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted-text);
+  background: var(--light-gray);
+  border-radius: 12px;
+}
+
+.profile-empty-state i {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.profile-empty-state a {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* =============================
+   BOOKING ROWS
+   ============================= */
+.profile-bookings-list {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profile-booking-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s;
+}
+
+.profile-booking-row:last-child {
+  border-bottom: none;
+}
+
+.profile-booking-row:hover {
+  background: var(--light-gray);
+}
+
+.profile-booking-icon {
+  width: 40px;
+  height: 40px;
+  background: #fff0f3;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.profile-booking-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-booking-title {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--dark-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-booking-meta {
+  font-size: 0.8rem;
+  color: var(--muted-text);
+  margin-top: 3px;
+}
+
+.profile-booking-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.profile-booking-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--dark-text);
+}
+
+/* =============================
+   RESPONSIVE
+   ============================= */
+@media (max-width: 640px) {
+  .profile-avatar-absolute {
+    left: 20px;
+    top: calc(160px - 44px);
+  }
+  .profile-avatar-img,
+  .profile-avatar-initial {
+    width: 88px;
+    height: 88px;
+    font-size: 2.2rem;
+    border-width: 4px;
+  }
+  .profile-info-body {
+    padding: 56px 20px 24px 124px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .profile-display-name {
+    font-size: 1.25rem;
+  }
+  .stat-number { font-size: 1.6rem; }
+  .stat-card { padding: 16px 8px; }
+  .profile-page-wrapper { margin: 20px auto 40px; }
+  .profile-booking-row { padding: 12px 14px; }
+}
+</style>

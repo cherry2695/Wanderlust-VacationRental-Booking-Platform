@@ -1,0 +1,79 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="row mt-5 mb-5 justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card form-card">
+      <h3 class="form-title text-center mb-4">Edit Profile</h3>
+
+      <form
+        method="POST"
+        action="/profile?_method=PUT"
+        enctype="multipart/form-data"
+        novalidate
+        class="needs-validation"
+      >
+        <!-- Current Avatar Preview -->
+        <div class="text-center mb-4">
+          <% if (profileUser.profileImage && profileUser.profileImage.url) { %>
+            <img src="<%= profileUser.profileImage.url %>" alt="Profile"
+              style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--border-color);" />
+          <% } else { %>
+            <div style="width:100px;height:100px;border-radius:50%;background:var(--primary-gradient);color:#fff;font-size:2.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid var(--border-color);">
+              <%= profileUser.username.charAt(0).toUpperCase() %>
+            </div>
+          <% } %>
+          <p class="text-muted mt-2 mb-0" style="font-size:0.8rem;">Current profile picture</p>
+        </div>
+
+        <!-- Upload Profile Image -->
+        <div class="mb-3">
+          <label for="profileImage" class="form-label fw-bold" style="font-size:0.9rem;">
+            Upload New Profile Picture
+          </label>
+          <input
+            id="profileImage"
+            name="profileImage"
+            type="file"
+            class="form-control"
+            accept="image/*"
+          />
+          <div class="form-text text-muted" style="font-size:0.75rem;">Leave empty to keep current image.</div>
+        </div>
+
+        <!-- Username -->
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            name="username"
+            id="username"
+            class="form-control"
+            value="<%= profileUser.username %>"
+            placeholder="Username"
+            required
+          />
+          <label for="username">Username</label>
+          <div class="invalid-feedback">Please enter a username.</div>
+        </div>
+
+        <!-- Email (readonly) -->
+        <div class="form-floating mb-4">
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            value="<%= profileUser.email %>"
+            placeholder="Email"
+            readonly
+            style="background:#f8f8f8;"
+          />
+          <label for="email">Email (cannot be changed)</label>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary-gradient py-3">Save Changes</button>
+          <a href="/profile" class="btn btn-outline-custom">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

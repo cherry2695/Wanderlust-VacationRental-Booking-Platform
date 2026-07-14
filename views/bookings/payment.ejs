@@ -1,45 +1,673 @@
 <% layout('/layouts/boilerplate') %>
 
 <div class="row mt-5 mb-5 justify-content-center">
-  <div class="col-12 col-md-8 col-lg-6">
-    <div class="card payment-card p-4">
-      <h2 class="fw-bold mb-2">Payment</h2>
-      <p class="text-muted mb-4">Complete your booking for <strong><%= booking.listingTitle %></strong>.</p>
+  <div class="col-12 col-md-9 col-lg-8 col-xl-7">
 
-      <div class="scanner-box mb-4">
-        <div class="scanner-status">
-          <div class="scanner-dot"></div>
-          <span>Scan your payment QR</span>
+    <div class="pay-page-card">
+
+      <!-- ===== Page Header ===== -->
+      <div class="pay-page-header">
+        <div>
+          <p class="pay-demo-badge">🔒 Demo Payment Gateway</p>
+          <h2 class="pay-page-title">Complete Your Payment</h2>
+          <p class="pay-page-subtitle">Booking for <strong><%= booking.listingTitle %></strong></p>
         </div>
-        <div class="scanner-screen">
-          <div class="scanner-grid"></div>
-          <p class="text-muted mb-0">Place your payment code inside the scanner to proceed.</p>
+        <div class="pay-secure-seal">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Secured</span>
         </div>
       </div>
 
-      <div class="booking-summary-box mb-4">
-        <div class="summary-row">
-          <span>Booking</span>
-          <strong><%= booking.listingTitle %></strong>
+      <div class="row g-4 mt-1">
+
+        <!-- ===== Left: Booking Summary ===== -->
+        <div class="col-md-5">
+          <div class="pay-summary-box">
+            <p class="pay-summary-heading">Booking Summary</p>
+
+            <div class="pay-summary-row">
+              <span class="pay-summary-label">Property</span>
+              <span class="pay-summary-value fw-bold"><%= booking.listingTitle %></span>
+            </div>
+            <div class="pay-summary-row">
+              <span class="pay-summary-label">Check-in</span>
+              <span class="pay-summary-value">
+                <%= new Date(booking.checkIn).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+              </span>
+            </div>
+            <div class="pay-summary-row">
+              <span class="pay-summary-label">Check-out</span>
+              <span class="pay-summary-value">
+                <%= new Date(booking.checkOut).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+              </span>
+            </div>
+            <div class="pay-summary-row">
+              <span class="pay-summary-label">Nights</span>
+              <span class="pay-summary-value"><%= booking.nights %></span>
+            </div>
+            <div class="pay-summary-row">
+              <span class="pay-summary-label">Guests</span>
+              <span class="pay-summary-value"><%= booking.guests %></span>
+            </div>
+
+            <div class="pay-summary-divider"></div>
+
+            <div class="pay-summary-total-row">
+              <span>Total</span>
+              <span class="pay-total-amount">&#8377;<%= booking.totalPrice.toLocaleString('en-IN') %></span>
+            </div>
+          </div>
         </div>
-        <div class="summary-row">
-          <span>Dates</span>
-          <strong><%= new Date(booking.checkIn).toLocaleDateString('en-CA') %> - <%= new Date(booking.checkOut).toLocaleDateString('en-CA') %></strong>
-        </div>
-        <div class="summary-row">
-          <span>Guests</span>
-          <strong><%= booking.guests %></strong>
-        </div>
-        <div class="summary-row total-row">
-          <span>Total</span>
-          <strong>&#8377;<%= booking.totalPrice.toLocaleString('en-IN') %></strong>
-        </div>
+
+        <!-- ===== Right: QR / UPI ===== -->
+        <div class="col-md-7">
+
+          <!-- Tab Switcher -->
+          <div class="pay-tab-switcher">
+            <button class="pay-tab-btn active" id="btn-qr" onclick="switchPayTab(this,'tab-qr')">
+              <i class="fa-solid fa-qrcode me-1"></i> QR Code
+            </button>
+            <button class="pay-tab-btn" id="btn-upi" onclick="switchPayTab(this,'tab-upi')">
+              <i class="fa-solid fa-mobile-screen-button me-1"></i> UPI ID
+            </button>
+          </div>
+
+          <!-- === QR Tab === -->
+          <div id="tab-qr" class="pay-tab-panel">
+            <p class="pay-tab-hint">Scan with any UPI app and pay securely</p>
+
+            <div class="pay-qr-box">
+
+              <!-- UPI App icons — real logos -->
+              <div class="pay-upi-apps-row">
+                <div class="pay-upi-app-item">
+                  <img src="/images/payment/phonepe.png" alt="PhonePe" class="pay-app-logo" />
+                  <span>PhonePe</span>
+                </div>
+                <div class="pay-upi-app-item">
+                  <img src="/images/payment/gpay.png" alt="GPay" class="pay-app-logo" />
+                  <span>GPay</span>
+                </div>
+                <div class="pay-upi-app-item">
+                  <img src="/images/payment/paytm.png" alt="Paytm" class="pay-app-logo pay-app-logo-paytm" />
+                  <span>Paytm</span>
+                </div>
+              </div>
+
+              <!-- QR Code SVG -->
+              <div class="pay-qr-svg-wrap">
+                <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Top-left finder pattern -->
+                  <rect x="10" y="10" width="50" height="50" rx="5" fill="#222"/>
+                  <rect x="17" y="17" width="36" height="36" rx="3" fill="#fff"/>
+                  <rect x="24" y="24" width="22" height="22" rx="2" fill="#222"/>
+                  <!-- Top-right finder pattern -->
+                  <rect x="120" y="10" width="50" height="50" rx="5" fill="#222"/>
+                  <rect x="127" y="17" width="36" height="36" rx="3" fill="#fff"/>
+                  <rect x="134" y="24" width="22" height="22" rx="2" fill="#222"/>
+                  <!-- Bottom-left finder pattern -->
+                  <rect x="10" y="120" width="50" height="50" rx="5" fill="#222"/>
+                  <rect x="17" y="127" width="36" height="36" rx="3" fill="#fff"/>
+                  <rect x="24" y="134" width="22" height="22" rx="2" fill="#222"/>
+                  <!-- Data modules -->
+                  <rect x="70" y="10" width="9" height="9" fill="#222"/> <rect x="82" y="10" width="9" height="9" fill="#222"/>
+                  <rect x="94" y="10" width="9" height="9" fill="#222"/> <rect x="106" y="10" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="22" width="9" height="9" fill="#222"/> <rect x="94" y="22" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="34" width="9" height="9" fill="#222"/> <rect x="82" y="34" width="9" height="9" fill="#222"/>
+                  <rect x="106" y="34" width="9" height="9" fill="#222"/> <rect x="70" y="46" width="9" height="9" fill="#222"/>
+                  <rect x="94" y="46" width="9" height="9" fill="#222"/> <rect x="106" y="46" width="9" height="9" fill="#222"/>
+                  <rect x="10" y="70" width="9" height="9" fill="#222"/> <rect x="22" y="70" width="9" height="9" fill="#222"/>
+                  <rect x="46" y="70" width="9" height="9" fill="#222"/> <rect x="10" y="82" width="9" height="9" fill="#222"/>
+                  <rect x="34" y="82" width="9" height="9" fill="#222"/> <rect x="46" y="82" width="9" height="9" fill="#222"/>
+                  <rect x="10" y="94" width="9" height="9" fill="#222"/> <rect x="22" y="94" width="9" height="9" fill="#222"/>
+                  <rect x="34" y="94" width="9" height="9" fill="#222"/> <rect x="10" y="106" width="9" height="9" fill="#222"/>
+                  <rect x="46" y="106" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="70" width="9" height="9" fill="#222"/> <rect x="82" y="70" width="9" height="9" fill="#222"/>
+                  <rect x="94" y="70" width="9" height="9" fill="#222"/> <rect x="106" y="70" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="82" width="9" height="9" fill="#222"/> <rect x="94" y="82" width="9" height="9" fill="#222"/>
+                  <rect x="106" y="82" width="9" height="9" fill="#222"/> <rect x="70" y="94" width="9" height="9" fill="#222"/>
+                  <rect x="82" y="94" width="9" height="9" fill="#222"/> <rect x="106" y="94" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="106" width="9" height="9" fill="#222"/> <rect x="94" y="106" width="9" height="9" fill="#222"/>
+                  <rect x="120" y="70" width="9" height="9" fill="#222"/> <rect x="132" y="70" width="9" height="9" fill="#222"/>
+                  <rect x="156" y="70" width="9" height="9" fill="#222"/> <rect x="120" y="82" width="9" height="9" fill="#222"/>
+                  <rect x="144" y="82" width="9" height="9" fill="#222"/> <rect x="120" y="94" width="9" height="9" fill="#222"/>
+                  <rect x="132" y="94" width="9" height="9" fill="#222"/> <rect x="156" y="94" width="9" height="9" fill="#222"/>
+                  <rect x="120" y="106" width="9" height="9" fill="#222"/> <rect x="144" y="106" width="9" height="9" fill="#222"/>
+                  <rect x="156" y="106" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="120" width="9" height="9" fill="#222"/> <rect x="82" y="120" width="9" height="9" fill="#222"/>
+                  <rect x="94" y="120" width="9" height="9" fill="#222"/> <rect x="70" y="132" width="9" height="9" fill="#222"/>
+                  <rect x="94" y="132" width="9" height="9" fill="#222"/> <rect x="106" y="132" width="9" height="9" fill="#222"/>
+                  <rect x="70" y="144" width="9" height="9" fill="#222"/> <rect x="82" y="144" width="9" height="9" fill="#222"/>
+                  <rect x="106" y="144" width="9" height="9" fill="#222"/> <rect x="70" y="156" width="9" height="9" fill="#222"/>
+                  <rect x="82" y="156" width="9" height="9" fill="#222"/> <rect x="106" y="156" width="9" height="9" fill="#222"/>
+                  <rect x="120" y="120" width="9" height="9" fill="#222"/> <rect x="144" y="120" width="9" height="9" fill="#222"/>
+                  <rect x="156" y="120" width="9" height="9" fill="#222"/> <rect x="120" y="132" width="9" height="9" fill="#222"/>
+                  <rect x="132" y="132" width="9" height="9" fill="#222"/> <rect x="120" y="144" width="9" height="9" fill="#222"/>
+                  <rect x="144" y="144" width="9" height="9" fill="#222"/> <rect x="156" y="144" width="9" height="9" fill="#222"/>
+                  <rect x="120" y="156" width="9" height="9" fill="#222"/> <rect x="156" y="156" width="9" height="9" fill="#222"/>
+                </svg>
+              </div>
+
+              <!-- UPI ID pill -->
+              <div class="pay-upi-id-pill">
+                <i class="fa-solid fa-at"></i>
+                <span>wanderlust@upi</span>
+              </div>
+
+              <p class="pay-qr-note">
+                Open PhonePe / GPay / Paytm → Scan QR → Pay &#8377;<%= booking.totalPrice.toLocaleString('en-IN') %>
+              </p>
+            </div>
+          </div>
+
+          <!-- === UPI ID Tab === -->
+          <div id="tab-upi" class="pay-tab-panel d-none">
+            <p class="pay-tab-hint">Copy UPI ID and pay from your preferred app</p>
+
+            <!-- UPI ID Copy Box -->
+            <div class="pay-upi-copy-box">
+              <div class="pay-upi-copy-left">
+                <i class="fa-solid fa-at pay-upi-at"></i>
+                <span class="pay-upi-id-text">wanderlust@upi</span>
+              </div>
+              <button class="pay-copy-btn" onclick="copyUpiId(this)" type="button">
+                <i class="fa-solid fa-copy"></i> Copy
+              </button>
+            </div>
+
+            <!-- App Buttons with real icons -->
+            <p class="pay-app-select-label">Choose your app to pay:</p>
+            <div class="pay-app-grid">
+              <div class="pay-app-tile">
+                <img src="/images/payment/phonepe.png" alt="PhonePe" class="pay-tile-logo" />
+                <span>PhonePe</span>
+              </div>
+              <div class="pay-app-tile">
+                <img src="/images/payment/gpay.png" alt="GPay" class="pay-tile-logo" />
+                <span>GPay</span>
+              </div>
+              <div class="pay-app-tile">
+                <img src="/images/payment/paytm.png" alt="Paytm" class="pay-tile-logo pay-tile-logo-paytm" />
+                <span>Paytm</span>
+              </div>
+            </div>
+
+            <p class="pay-upi-steps">
+              Open app → Send Money / Pay → Paste UPI ID → Enter &#8377;<%= booking.totalPrice.toLocaleString('en-IN') %> → Pay
+            </p>
+          </div>
+
+        </div><!-- end col right -->
+      </div><!-- end row -->
+
+      <!-- ===== Confirm Button ===== -->
+      <div class="pay-confirm-section">
+        <form action="/bookings/<%= booking._id %>/pay" method="POST">
+          <button class="pay-confirm-btn" type="submit">
+            <i class="fa-solid fa-circle-check me-2"></i>
+            Confirm Payment of &#8377;<%= booking.totalPrice.toLocaleString('en-IN') %>
+          </button>
+        </form>
+        <a href="/bookings" class="pay-back-link">Back to My Bookings</a>
+        <p class="pay-disclaimer">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          This is a demo payment — no real transaction will occur.
+        </p>
       </div>
 
-      <form action="/bookings/<%= booking._id %>/pay" method="POST">
-        <button class="btn btn-primary-gradient w-100 mb-3" type="submit">Pay & Confirm Booking</button>
-      </form>
-      <a href="/bookings" class="btn btn-outline-custom w-100">Back to My Bookings</a>
-    </div>
+    </div><!-- end pay-page-card -->
   </div>
 </div>
+
+<style>
+/* ==============================
+   PAYMENT PAGE STYLES
+   ============================== */
+.pay-page-card {
+  background: #fff;
+  border: 1px solid #E8E8E8;
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.07);
+}
+
+/* Header */
+.pay-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.pay-demo-badge {
+  display: inline-block;
+  background: #FFF8E1;
+  color: #856404;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid #FFD54F;
+  margin-bottom: 8px;
+}
+
+.pay-page-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #222;
+  margin: 0 0 4px;
+}
+
+.pay-page-subtitle {
+  font-size: 0.88rem;
+  color: #717171;
+  margin: 0;
+}
+
+.pay-secure-seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #28a745;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pay-secure-seal i {
+  font-size: 1.8rem;
+}
+
+/* Booking Summary */
+.pay-summary-box {
+  background: #F7F7F7;
+  border-radius: 14px;
+  padding: 20px;
+  height: 100%;
+}
+
+.pay-summary-heading {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #717171;
+  margin-bottom: 16px;
+}
+
+.pay-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pay-summary-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #717171;
+  flex-shrink: 0;
+}
+
+.pay-summary-value {
+  font-size: 0.88rem;
+  color: #222;
+  text-align: right;
+}
+
+.pay-summary-divider {
+  border-top: 1px solid #E0E0E0;
+  margin: 16px 0;
+}
+
+.pay-summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #717171;
+}
+
+.pay-total-amount {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+/* Tab Switcher */
+.pay-tab-switcher {
+  display: flex;
+  gap: 0;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.pay-tab-btn {
+  flex: 1;
+  padding: 11px 8px;
+  border: none;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #717171;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pay-tab-btn:first-child {
+  border-right: 1.5px solid #E0E0E0;
+}
+
+.pay-tab-btn.active {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.pay-tab-btn:not(.active):hover {
+  background: #F7F7F7;
+}
+
+/* Tab hint text */
+.pay-tab-hint {
+  font-size: 0.82rem;
+  color: #717171;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* QR Box */
+.pay-qr-box {
+  border: 1.5px solid #E8E8E8;
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+/* UPI App Icons Row */
+.pay-upi-apps-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.pay-upi-app-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.pay-app-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: contain;
+  border: 1px solid #E8E8E8;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.pay-app-logo-paytm {
+  border-radius: 8px;
+  padding: 4px;
+  background: #fff;
+}
+
+/* QR SVG wrapper */
+.pay-qr-svg-wrap {
+  display: inline-block;
+  padding: 14px;
+  background: #fff;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  line-height: 0;
+}
+
+/* UPI ID Pill */
+.pay-upi-id-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #F7F7F7;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+.pay-upi-id-pill i {
+  color: var(--primary-color);
+}
+
+.pay-qr-note {
+  font-size: 0.78rem;
+  color: #717171;
+  margin: 0;
+}
+
+/* UPI ID Copy Box */
+.pay-upi-copy-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 2px dashed #E0E0E0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  background: #F7F7F7;
+  margin-bottom: 20px;
+}
+
+.pay-upi-copy-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pay-upi-at {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.pay-upi-id-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.pay-copy-btn {
+  background: #fff;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.pay-copy-btn:hover,
+.pay-copy-btn.copied {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+/* App Grid (UPI tab) */
+.pay-app-select-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #717171;
+  margin-bottom: 12px;
+}
+
+.pay-app-grid {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+}
+
+.pay-app-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 18px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333;
+  min-width: 80px;
+}
+
+.pay-app-tile:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(255,56,92,0.12);
+  transform: translateY(-2px);
+}
+
+.pay-tile-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: contain;
+  border: 1px solid #F0F0F0;
+}
+
+.pay-tile-logo-paytm {
+  padding: 3px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.pay-upi-steps {
+  font-size: 0.8rem;
+  color: #717171;
+  background: #F7F7F7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  line-height: 1.6;
+}
+
+/* Confirm Section */
+.pay-confirm-section {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid #E8E8E8;
+  text-align: center;
+}
+
+.pay-confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #FF385C, #E31C5F);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 18px rgba(255,56,92,0.3);
+  margin-bottom: 14px;
+}
+
+.pay-confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,56,92,0.4);
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+}
+
+.pay-back-link {
+  display: block;
+  font-size: 0.88rem;
+  color: #717171;
+  text-decoration: underline;
+  margin-bottom: 14px;
+  transition: color 0.2s;
+}
+
+.pay-back-link:hover {
+  color: var(--primary-color);
+}
+
+.pay-disclaimer {
+  font-size: 0.75rem;
+  color: #AAAAAA;
+  margin: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 576px) {
+  .pay-page-card {
+    padding: 22px 16px;
+    border-radius: 14px;
+  }
+  .pay-app-grid {
+    flex-wrap: wrap;
+  }
+  .pay-upi-copy-box {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+</style>
+
+<script>
+function switchPayTab(btn, tabId) {
+  // Remove active from all tab buttons
+  document.querySelectorAll('.pay-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Hide all panels
+  document.querySelectorAll('.pay-tab-panel').forEach(p => p.classList.add('d-none'));
+  // Show selected panel
+  document.getElementById(tabId).classList.remove('d-none');
+}
+
+function copyUpiId(btn) {
+  navigator.clipboard.writeText('wanderlust@upi').then(() => {
+    btn.classList.add('copied');
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = original;
+    }, 2000);
+  });
+}
+</script>

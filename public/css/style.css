@@ -175,12 +175,13 @@ a:hover {
 .user-dropdown-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border: 1px solid var(--border-color);
   background-color: #FFFFFF;
-  padding: 6px 6px 6px 12px;
+  padding: 6px 12px 6px 12px;
   border-radius: var(--border-radius-pill);
   transition: var(--transition-smooth);
+  max-width: 220px;
 }
 
 .user-dropdown-btn:hover {
@@ -190,12 +191,13 @@ a:hover {
 .user-dropdown-btn i.fa-bars {
   font-size: 0.9rem;
   color: var(--dark-text);
+  flex-shrink: 0;
 }
 
 .user-dropdown-btn .user-avatar-placeholder {
   width: 30px;
   height: 30px;
-  background-color: var(--muted-text);
+  background-color: var(--primary-color);
   color: white;
   border-radius: var(--border-radius-pill);
   display: flex;
@@ -203,11 +205,66 @@ a:hover {
   justify-content: center;
   font-weight: 600;
   font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 .user-dropdown-btn i.fa-circle-user {
   font-size: 1.8rem;
   color: var(--muted-text);
+  flex-shrink: 0;
+}
+
+/* Profile photo in navbar button */
+.user-avatar-photo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border-color);
+}
+
+/* Profile photo in dropdown header */
+.nav-dropdown-avatar-photo {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border-color);
+}
+
+/* Username text next to avatar in navbar */
+.user-name-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--dark-text);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dropdown user header card */
+.dropdown-user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px 8px;
+}
+
+.dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 /* Ensure navbar links never show underlines and have a smooth modern hover */
@@ -237,27 +294,139 @@ a:hover {
   text-decoration: none !important;
 }
 
-.dropdown-menu {
-  border-radius: var(--border-radius-md) !important;
-  box-shadow: var(--card-shadow) !important;
-  border: 1px solid rgba(0,0,0,0.04) !important;
-  padding: 8px 0 !important;
-  margin-top: 10px !important;
+/* ===== DROPDOWN MENU ===== */
+.nav-dropdown-menu {
+  border-radius: 16px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  padding: 6px 0 !important;
+  margin-top: 12px !important;
+  min-width: 230px !important;
+  overflow: hidden;
 }
 
-.dropdown-item {
-  padding: 10px 24px !important;
-  font-size: 0.9rem !important;
+/* User Header inside dropdown */
+.nav-dropdown-user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 14px;
+  background: #fafafa;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-dropdown-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.nav-dropdown-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-dropdown-username {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--dark-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.nav-dropdown-email {
+  font-size: 0.75rem;
+  color: var(--muted-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* Divider */
+.nav-dropdown-divider {
+  margin: 4px 0 !important;
+  border-color: var(--border-color) !important;
+  opacity: 1 !important;
+}
+
+/* Individual items */
+.nav-dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 11px 18px !important;
+  font-size: 0.88rem !important;
   font-weight: 500 !important;
+  color: var(--dark-text) !important;
+  transition: background 0.15s ease !important;
+}
+
+.nav-dropdown-item:hover {
+  background-color: var(--light-gray) !important;
   color: var(--dark-text) !important;
 }
 
+.nav-dropdown-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  color: var(--muted-text);
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.nav-dropdown-item:hover .nav-dropdown-icon {
+  background: #e8e8e8;
+}
+
+/* Logout item */
+.nav-dropdown-logout {
+  color: #d93025 !important;
+}
+.nav-dropdown-logout .nav-dropdown-icon {
+  background: #fde8e6;
+  color: #d93025;
+}
+.nav-dropdown-logout:hover {
+  background: #fff5f4 !important;
+}
+.nav-dropdown-logout:hover .nav-dropdown-icon {
+  background: #fdd0cc;
+}
+
+/* Guest dropdown items (sign up / log in) */
+.nav-dropdown-item.fw-bold-custom {
+  font-weight: 700 !important;
+}
+
+/* Fallback for any non-nav-dropdown-item dropdown-items */
+.dropdown-item {
+  padding: 10px 18px !important;
+  font-size: 0.88rem !important;
+  font-weight: 500 !important;
+  color: var(--dark-text) !important;
+}
 .dropdown-item:hover {
   background-color: var(--light-gray) !important;
 }
-
 .dropdown-item.fw-bold-custom {
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 .navbar-brand span {
@@ -273,22 +442,23 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 14px 0 8px 0;
+  padding: 14px 0 0 0;          /* no bottom padding — let scroll handle it */
   margin: 10px 0 16px;
   background: white;
-  gap: 16px;
+  gap: 20px;
 }
 
 .categories-scroll {
   display: flex;
-  align-items: center;
+  align-items: flex-start;     /* align from top so icons + labels sit right */
   gap: 32px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   flex: 1 1 auto;
   min-width: 0;
+  padding-bottom: 8px;         /* the bottom border/padding lives here */
 }
 
 .categories-scroll::-webkit-scrollbar {
@@ -341,24 +511,78 @@ a:hover {
   color: var(--primary-color);
 }
 
+/* Tax Toggle Switch */
 .tax-toggle-box {
   display: flex;
   align-items: center;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-md);
-  padding: 12px 16px;
-  height: 48px;
+  align-self: center;        /* stay on same line as category icons */
+  gap: 12px;
+  border: 1.5px solid #DDDDDD;
+  border-radius: 50px;
+  padding: 10px 18px;
   margin-left: auto;
   background-color: #FFFFFF;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  height: fit-content;       /* don't stretch to fill container height */
 }
 
-.tax-toggle-box .form-check-label {
+.tax-toggle-box:hover {
+  border-color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tax-toggle-label {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--dark-text);
-  margin-right: 8px;
   cursor: pointer;
+  margin: 0;
+  user-select: none;
+}
+
+.tax-toggle-input {
+  cursor: pointer;
+  width: 2.8em !important;
+  height: 1.5em !important;
+  border-radius: 50px !important;
+  background-color: #DDDDDD !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  flex-shrink: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  transition: background-color 0.25s ease !important;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+}
+
+/* Thumb (circle inside toggle) */
+.tax-toggle-input::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  width: 1.1em;
+  height: 1.1em;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.tax-toggle-input:checked {
+  background-color: var(--primary-color) !important;
+  background-image: none !important;
+}
+
+.tax-toggle-input:checked::before {
+  left: calc(100% - 1.1em - 3px);
 }
 
 .footer-links a.active-link,
@@ -385,16 +609,7 @@ a:hover {
   color: #5f5f5f;
 }
 
-.tax-toggle-box .form-check-input {
-  cursor: pointer;
-  width: 2.5em;
-  height: 1.25em;
-}
-
-.tax-toggle-box .form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
+/* Tax toggle: form-check-input switch styles kept below .form-check override */
 
 .tax-info {
   font-weight: 600;
@@ -687,11 +902,11 @@ a:hover {
 }
 
 .booking-input-item {
-  padding: 18px 16px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 90px;
+  min-height: 80px;
   border-bottom: 1px solid var(--border-color);
   background-color: #FFFFFF;
 }
@@ -714,28 +929,50 @@ a:hover {
 }
 
 .booking-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--dark-text);
   letter-spacing: 0.05em;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  display: block;
 }
 
+/* Date input — ensure calendar icon never overlaps text */
 .booking-input-control {
   width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: var(--border-radius-sm);
-  padding: 0.95rem 1rem;
-  font-size: 0.95rem;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 0.93rem;
+  font-weight: 500;
   color: var(--dark-text);
-  background: #ffffff;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  font-family: var(--font-main);
+  /* Ensure enough room for the calendar icon on all browsers */
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+/* Webkit: style the date input calendar icon area */
+.booking-input-control::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  margin-left: 4px;
+  flex-shrink: 0;
 }
 
 .booking-input-control:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.12);
+  box-shadow: none;
+}
+
+/* Wrapper that holds label + input side by side with icon space */
+.booking-date-item .booking-input-control {
+  display: block;
+  width: 100%;
 }
 
 .booking-val {
@@ -749,8 +986,21 @@ a:hover {
 }
 
 .booking-guests-item {
-  padding-top: 14px;
-  padding-bottom: 14px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.booking-guests-item .booking-input-control {
+  border: none;
+  background: transparent;
+  font-size: 0.93rem;
+  font-weight: 500;
+  padding: 0;
+  color: var(--dark-text);
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  font-family: var(--font-main);
 }
 
 .map-card {
@@ -998,51 +1248,218 @@ a:hover {
   margin-bottom: 8px;
 }
 
-/* Map area */
+/* Map area — no top radius so it merges with the card header */
 #map {
   height: 380px !important;
   width: 100% !important;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--border-color);
-  margin-top: 12px;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: var(--border-radius-lg) !important;
+  border-bottom-right-radius: var(--border-radius-lg) !important;
+  box-shadow: none;
+  border: none;
+  margin-top: 0;
 }
 
 /* ==========================================================================
-   FORMS & INPUT DESIGN
+   FORMS & INPUT DESIGN — Complete Fix
    ========================================================================== */
+
+/* --- Form Card Container --- */
 .form-card {
   background-color: #FFFFFF;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-lg);
-  padding: 36px;
-  box-shadow: var(--card-shadow);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
   margin-bottom: 48px;
 }
 
 .form-title {
   font-size: 1.5rem;
   font-weight: 750;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   color: var(--dark-text);
 }
 
-.form-control, .form-select {
-  border: 1px solid var(--border-color) !important;
-  border-radius: var(--border-radius-sm) !important;
-  padding: 12px 16px !important;
+/* --- Base inputs & selects (non-floating) --- */
+.form-control,
+.form-select {
+  background-color: #FFFFFF !important;
+  border: 1.5px solid #DDDDDD !important;
+  border-radius: 10px !important;
   font-size: 0.95rem !important;
+  font-family: var(--font-main) !important;
   color: var(--dark-text) !important;
-  transition: var(--transition-smooth) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  min-height: 52px !important;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
+  background-color: #FFFFFF !important;
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.14) !important;
+  outline: none !important;
+}
+
+/* --- Kill browser autofill blue background --- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: var(--dark-text) !important;
+  background-color: #FFFFFF !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* --- Bootstrap Floating Labels --- */
+/* Bootstrap needs padding-top space for the floating label */
+.form-floating > .form-control,
+.form-floating > .form-select {
+  padding: 1.625rem 1rem 0.5rem !important;
+  min-height: 58px !important;
+  line-height: 1.5 !important;
+}
+
+.form-floating > textarea.form-control {
+  padding-top: 1.8rem !important;
+  padding-bottom: 0.8rem !important;
+  height: auto !important;
+  min-height: 140px !important;
+  resize: vertical;
 }
 
 .form-floating > label {
+  padding: 1rem 1rem !important;
+  font-size: 0.9rem !important;
+  color: var(--muted-text) !important;
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out !important;
+  transform-origin: 0 0 !important;
+  pointer-events: none;
+}
+
+/* Floating label — floated state (when focused or has value) */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+  opacity: 0.75 !important;
+  transform: scale(0.82) translateY(-0.7rem) !important;
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+}
+
+/* Fix autofill detection for floating label */
+.form-floating > .form-control:-webkit-autofill ~ label {
+  opacity: 0.75 !important;
+  transform: scale(0.82) translateY(-0.7rem) !important;
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+}
+
+/* --- Validation: ONLY show :invalid styles after form is submitted (was-validated) --- */
+/* Remove red borders before interaction */
+.form-control:invalid,
+.form-select:invalid {
+  border-color: #DDDDDD !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* Show invalid styles only inside a validated form */
+.was-validated .form-control:invalid,
+.was-validated .form-select:invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12) !important;
+}
+
+.was-validated .form-control:valid,
+.was-validated .form-select:valid {
+  border-color: #198754 !important;
+  box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.10) !important;
+}
+
+/* Remove Bootstrap's default valid/invalid background icons */
+.form-control.is-invalid,
+.form-control.is-valid,
+.was-validated .form-control:valid,
+.was-validated .form-control:invalid {
+  background-image: none !important;
+  padding-right: 1rem !important;
+}
+
+.form-select.is-invalid,
+.form-select.is-valid,
+.was-validated .form-select:valid,
+.was-validated .form-select:invalid {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px 12px !important;
+}
+
+/* --- Validation feedback messages --- */
+.invalid-feedback {
+  font-size: 0.78rem !important;
+  margin-top: 4px;
+  color: #dc3545 !important;
+}
+
+.valid-feedback {
+  font-size: 0.78rem !important;
+  margin-top: 4px;
+  color: #198754 !important;
+}
+
+/* --- File input --- */
+input[type="file"].form-control {
   padding: 12px 16px !important;
+  min-height: 48px !important;
+  cursor: pointer;
+}
+
+/* --- Checkbox & amenities (NOT applied to switch toggles) --- */
+.form-check:not(.form-switch) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: #fff;
+  min-height: 44px;
+}
+
+.form-check:not(.form-switch):hover {
+  border-color: var(--primary-color);
+  background: #fff9fa;
+}
+
+/* Amenity checkbox inputs only */
+.form-check:not(.form-switch) .form-check-input {
+  flex-shrink: 0;
+  margin: 0 !important;
+  cursor: pointer;
+  width: 18px !important;
+  height: 18px !important;
+  border: 1.5px solid #CCCCCC !important;
+  border-radius: 4px !important;
+}
+
+.form-check:not(.form-switch) .form-check-input:checked {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.form-check:not(.form-switch) .form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(255,56,92,0.18) !important;
+  border-color: var(--primary-color) !important;
 }
 
 /* ==========================================================================
@@ -1153,4 +1570,98 @@ footer {
   .show-gallery-container {
     height: 240px;
   }
+  /* Hide username text on very small screens — avatar initial is enough */
+  .user-name-text {
+    display: none;
+  }
+  /* Show/hide profile page stat cards on mobile */
+  .stat-card {
+    padding: 14px 8px;
+  }
+  .stat-number {
+    font-size: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   ADDITIONAL UTILITY STYLES
+   ========================================================================== */
+
+/* Make date inputs look consistent cross-browser */
+input[type="date"].booking-input-control,
+input[type="date"].booking-input-control::-webkit-datetime-edit {
+  display: block;
+}
+
+/* Fix for Firefox date input */
+@-moz-document url-prefix() {
+  input[type="date"].booking-input-control {
+    padding: 2px 0;
+  }
+}
+
+/* Dropdown logout link red color */
+.dropdown-item.text-danger:hover {
+  background-color: #fff5f5 !important;
+  color: #c1121f !important;
+}
+
+/* Booking widget Reserve button – make it stand out more */
+.booking-btn {
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 14px rgba(255, 56, 92, 0.35);
+}
+.booking-btn:hover {
+  box-shadow: 0 6px 20px rgba(255, 56, 92, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Map card — ensure the map div takes full width inside the card */
+.map-card > #map {
+  display: block;
+  width: 100%;
+}
+
+/* Ensure form-card on profile/signup/login pages centers nicely on md+ */
+@media (min-width: 768px) {
+  .user-name-text {
+    display: inline-block;
+  }
+}
+
+/* Smooth transition for flash alerts */
+.alert {
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Profile hero card responsive */
+@media (max-width: 576px) {
+  .profile-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 16px 20px;
+    margin-top: -40px;
+  }
+  .profile-avatar-img,
+  .profile-avatar-initial {
+    width: 72px;
+    height: 72px;
+    font-size: 2rem;
+  }
+}
+
+/* Booking summary card border hover */
+.booking-summary-card:hover {
+  box-shadow: var(--hover-shadow);
+  transition: var(--transition-smooth);
+}
+
+/* Error page improvements */
+.error-prop {
+  font-size: 1.2rem;
+  font-weight: 700;
 }

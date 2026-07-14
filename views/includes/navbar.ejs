@@ -1,12 +1,12 @@
 <nav class="navbar navbar-expand-md sticky-top">
   <div class="container">
-    <!-- Brand Logo & Name -->
+    <!-- Brand -->
     <a class="navbar-brand" href="/listings">
       <i class="fa-solid fa-compass"></i>
       <span>Wanderlust</span>
     </a>
 
-    <!-- Navbar Toggler for Mobile -->
+    <!-- Mobile Toggle -->
     <button
       class="navbar-toggler"
       type="button"
@@ -21,32 +21,24 @@
 
     <!-- Navbar Content -->
     <div class="collapse navbar-collapse" id="navbarContent">
-      <!-- Centered Rounded Search Bar -->
+
+      <!-- Search Bar (centered) -->
       <div class="navbar-nav mx-auto mt-2 mt-md-0">
-        <form
-          class="nav-search-bar"
-          role="search"
-          method="GET"
-          action="/listings/search"
-        >
-          <input
-            type="text"
-            name="search"
-            placeholder="Search destinations"
-            required
-          />
+        <form class="nav-search-bar" role="search" method="GET" action="/listings/search">
+          <input type="text" name="search" placeholder="Search destinations" required />
           <button class="nav-search-btn" type="submit">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
         </form>
       </div>
 
-      <!-- Right Menu: Host link & User Dropdown -->
+      <!-- Right: host link + dropdown -->
       <div class="nav-menu-right mt-3 mt-md-0 ms-auto">
+
         <a class="host-link d-none d-md-inline-block" href="/listings/new">
           Wanderlust your home
         </a>
-        
+
         <div class="dropdown">
           <button
             class="user-dropdown-btn"
@@ -56,24 +48,95 @@
           >
             <i class="fa-solid fa-bars"></i>
             <% if (currUser) { %>
-              <div class="user-avatar-placeholder">
-                <%= currUser.username.charAt(0).toUpperCase() %>
-              </div>
+              <!-- Show profile picture if available, else show initial -->
+              <% if (currUser.profileImage && currUser.profileImage.url) { %>
+                <img
+                  src="<%= currUser.profileImage.url %>"
+                  class="user-avatar-photo"
+                  alt="<%= currUser.username %>"
+                />
+              <% } else { %>
+                <div class="user-avatar-placeholder">
+                  <%= currUser.username.charAt(0).toUpperCase() %>
+                </div>
+              <% } %>
+              <span class="user-name-text"><%= currUser.username %></span>
             <% } else { %>
               <i class="fa-solid fa-circle-user"></i>
             <% } %>
           </button>
-          
-          <ul class="dropdown-menu dropdown-menu-end">
+
+          <ul class="dropdown-menu dropdown-menu-end nav-dropdown-menu">
+
             <% if (!currUser) { %>
-              <li><a class="dropdown-item fw-bold-custom" href="/signup">Sign up</a></li>
-              <li><a class="dropdown-item" href="/login">Log in</a></li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item fw-bold-custom" href="/signup">
+                  Sign up
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/login">
+                  Log in
+                </a>
+              </li>
+
             <% } else { %>
-              <li><a class="dropdown-item fw-bold-custom" href="/listings/new">Wanderlust your home</a></li>
-              <li><a class="dropdown-item" href="/listings">Explore listings</a></li>
-              <li><a class="dropdown-item" href="/bookings">My Bookings</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/logout">Log out</a></li>
+              <!-- Dropdown User Header -->
+              <li>
+                <div class="nav-dropdown-user-header">
+                  <% if (currUser.profileImage && currUser.profileImage.url) { %>
+                    <img
+                      src="<%= currUser.profileImage.url %>"
+                      class="nav-dropdown-avatar-photo"
+                      alt="<%= currUser.username %>"
+                    />
+                  <% } else { %>
+                    <div class="nav-dropdown-avatar">
+                      <%= currUser.username.charAt(0).toUpperCase() %>
+                    </div>
+                  <% } %>
+                  <div class="nav-dropdown-user-info">
+                    <div class="nav-dropdown-username"><%= currUser.username %></div>
+                    <div class="nav-dropdown-email"><%= currUser.email %></div>
+                  </div>
+                </div>
+              </li>
+
+              <li><hr class="nav-dropdown-divider"></li>
+
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/listings/new">
+                  <span class="nav-dropdown-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                  Wanderlust your home
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/listings">
+                  <span class="nav-dropdown-icon"><i class="fa-solid fa-compass"></i></span>
+                  Explore listings
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/bookings">
+                  <span class="nav-dropdown-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                  My Bookings
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/profile">
+                  <span class="nav-dropdown-icon"><i class="fa-solid fa-user"></i></span>
+                  My Profile
+                </a>
+              </li>
+
+              <li><hr class="nav-dropdown-divider"></li>
+
+              <li>
+                <a class="dropdown-item nav-dropdown-item nav-dropdown-logout" href="/logout">
+                  <span class="nav-dropdown-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                  Log out
+                </a>
+              </li>
             <% } %>
           </ul>
         </div>

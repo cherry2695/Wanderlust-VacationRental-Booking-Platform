@@ -56,7 +56,7 @@ An Airbnb-inspired **full-stack vacation rental booking platform** that enables 
 
 # 🚀 Tech Stack
 
-## Frontend
+### Frontend
 - HTML5
 - CSS3
 - Bootstrap 5
@@ -67,27 +67,21 @@ An Airbnb-inspired **full-stack vacation rental booking platform** that enables 
 - Node.js
 - Express.js
 
-## Database
+### Database
 - MongoDB
 - Mongoose
 
-## Authentication
+### Authentication
 - Passport.js
 - Passport Local
 - Express Session
 
-## Cloud Services
+### Cloud Services
 - Cloudinary
 - Multer
 - Multer Storage Cloudinary
 
-## APIs
-- Mapbox Geocoding API
-
-## Validation
-- Joi
-
-## Architecture
+### Architecture
 - MVC (Model View Controller)
 
 ---
@@ -125,3 +119,17 @@ Wanderlust/
 ├── package-lock.json
 └── README.md
 ```
+---
+## 📸 Project Preview
+
+| Home | Listings |
+|------|----------|
+| <img src="./public/images/Wanderlust_Home.png" width="500"/> | <img src="./public/images/Wanderlust_Listing.png" width="500"/> |
+
+| Maps | Payment |
+|------|----------|
+| <img src="./public/images/Wandelust_Maps.png" width="500"/> | <img src="./public/images/Wandelust_Payment.png" width="500"/> |
+
+| User Profile |
+|--------------|
+| <img src="./public/images/Wanderlust_profile.png" width="600"/> |

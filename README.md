@@ -130,6 +130,6 @@ Wanderlust/
 |------|----------|
 | <img src="./public/images/Wandelust_Maps.png" width="500"/> | <img src="./public/images/Wandelust_Payment.png" width="500"/> |
 
-| User Profile |
-|--------------|
-| <img src="./public/images/Wanderlust_profile.png" width="600"/> |
+## 🚀 Live Demo
+
+🔗 [View Wanderlust Live](https://wanderlust-vacationrental-booking-qugt.onrender.com)

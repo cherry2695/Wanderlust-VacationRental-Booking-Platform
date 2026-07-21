@@ -6,6 +6,19 @@ const Listing = require("../models/listing.js");
 
 const MONGO_URL = process.env.ATLASDB_URL;
 
+// All 9 categories used in the app
+const ALL_CATEGORIES = [
+    "Trending",
+    "Rooms",
+    "Iconic Cities",
+    "Mountains",
+    "Beach",
+    "Camping",
+    "Pools",
+    "Farms",
+    "Cabins",
+];
+
 async function main() {
     try {
         await mongoose.connect(MONGO_URL);
@@ -13,9 +26,9 @@ async function main() {
 
         await initDB();
 
-        console.log("✅ Database initialized successfully");
+        console.log("✅ Database seeded successfully");
     } catch (err) {
-        console.error("❌ Database initialization failed:", err);
+        console.error("❌ Database seeding failed:", err);
     } finally {
         await mongoose.connection.close();
         console.log("🔌 MongoDB connection closed");
@@ -23,34 +36,34 @@ async function main() {
 }
 
 async function initDB() {
+    // Get the raw array regardless of export style
+    const rawData = initData.data || initData;
+
     // Delete existing listings
     await Listing.deleteMany({});
-    console.log("🗑️ Existing listings deleted");
+    console.log("🗑️  Existing listings deleted");
 
-    // Add required fields to your sample data
-    const listings = initData.data.map((obj, index) => ({
+    // Assign categories cyclically across ALL 9 categories
+    const listings = rawData.map((obj, index) => ({
         ...obj,
-
-        // Your schema requires category
-        category:
-            index % 4 === 0
-                ? "Trending"
-                : index % 4 === 1
-                ? "Rooms"
-                : index % 4 === 2
-                ? "Iconic Cities"
-                : "Mountains",
-
-        // No owner initially
+        category: ALL_CATEGORIES[index % ALL_CATEGORIES.length],
         owner: [],
-
-        // Empty reviews initially
         reviews: [],
     }));
 
     await Listing.insertMany(listings);
 
-    console.log(`✅ ${listings.length} listings inserted successfully`);
+    // Log how many listings each category got
+    const summary = {};
+    listings.forEach((l) => {
+        summary[l.category] = (summary[l.category] || 0) + 1;
+    });
+    console.log("\n📊 Listings per category:");
+    Object.entries(summary).forEach(([cat, count]) => {
+        console.log(`   ${cat}: ${count} listing(s)`);
+    });
+
+    console.log(`\n✅ ${listings.length} total listings inserted`);
 }
 
 main();

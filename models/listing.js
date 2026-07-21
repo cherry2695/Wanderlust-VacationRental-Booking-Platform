@@ -17,7 +17,17 @@ let listingSchema = new Schema({
   country: String,
   category: {
     type: String,
-    enum: ["Trending", "Rooms", "Iconic Cities", "Mountains"],
+    enum: [
+      "Trending",
+      "Rooms",
+      "Iconic Cities",
+      "Mountains",
+      "Beach",
+      "Camping",
+      "Pools",
+      "Farms",
+      "Cabins",
+    ],
     required: true,
   },
   amenities: [String],

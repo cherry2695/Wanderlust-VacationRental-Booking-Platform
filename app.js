@@ -29,11 +29,27 @@ const { storage, cloudinary } = require('./cloudConfig');
 const upload = multer({ storage });
 
 
-// ================= SIMPLE GEOCODE HELPER =================
-// Returns a default Point if no geocoding service is configured.
-// Replace with a real geocoding API call if needed.
-async function geocodeLocation(locationStr) {
-    // Default to New Delhi coordinates as a safe fallback
+// ================= GEOCODE HELPER (Nominatim / OpenStreetMap) =================
+// Free geocoding — no API key required. Respects Nominatim's 1 req/s policy.
+async function geocodeLocation(locationStr, countryStr = '') {
+    try {
+        const query = encodeURIComponent(
+            countryStr ? `${locationStr}, ${countryStr}` : locationStr
+        );
+        const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`;
+        const response = await fetch(url, {
+            headers: { 'User-Agent': 'WanderlustApp/1.0 (wanderlust@example.com)' }
+        });
+        const data = await response.json();
+        if (data && data.length > 0) {
+            const lon = parseFloat(data[0].lon);
+            const lat = parseFloat(data[0].lat);
+            return { type: 'Point', coordinates: [lon, lat] };
+        }
+    } catch (e) {
+        console.error('Geocode error:', e.message);
+    }
+    // Fallback: New Delhi
     return { type: 'Point', coordinates: [77.2090, 28.6139] };
 }
 

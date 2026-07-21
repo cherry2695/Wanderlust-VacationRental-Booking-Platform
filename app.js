@@ -25,27 +25,22 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
-const multer = require("multer");
-const { storage, cloudinary } = require("./cloudConfig.js");
-const upload = multer({ storage });
-const geocodeLocation = require('./utils/geocode.js');
-
-const MONGO_URL = 'mongodb://localhost:27017/wanderlust';
 
 
 // ================= DATABASE CONNECTION =================
 
-main()
-    .then(() => {
-        console.log('Connected to MongoDB');
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
+const MONGO_URL = process.env.ATLASDB_URL;
+                
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    try {
+        await mongoose.connect(MONGO_URL);
+        console.log("✅ Connected to MongoDB Atlas");
+    } catch (err) {
+        console.error("❌ MongoDB Connection Error:", err);
+    }
 }
+
+main();
 
 
 // ================= EJS ENGINE =================
@@ -63,9 +58,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-// ================= SESSION CONFIG =================
 
 const sessionOptions = {
     secret: 'mysupersecretcode',
@@ -743,8 +735,8 @@ app.use((err, req, res, next) => {
 });
 
 
-// ================= SERVER =================
+const PORT = process.env.PORT || 8080;
 
-app.listen(8080, () => {
-    console.log('Server is running on port 8080');
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
 });

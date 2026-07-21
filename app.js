@@ -25,6 +25,10 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
+const multer = require('multer');
+const { storage } = require('./cloudConfig');
+
+const upload = multer({ storage });
 
 
 // ================= DATABASE CONNECTION =================

@@ -1,6 +1,4 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
+require('dotenv').config();
 
 const express = require('express');
 const app = express();
@@ -26,9 +24,18 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
 const multer = require('multer');
-const { storage } = require('./cloudConfig');
+const { storage, cloudinary } = require('./cloudConfig');
 
 const upload = multer({ storage });
+
+
+// ================= SIMPLE GEOCODE HELPER =================
+// Returns a default Point if no geocoding service is configured.
+// Replace with a real geocoding API call if needed.
+async function geocodeLocation(locationStr) {
+    // Default to New Delhi coordinates as a safe fallback
+    return { type: 'Point', coordinates: [77.2090, 28.6139] };
+}
 
 
 // ================= DATABASE CONNECTION =================
@@ -64,12 +71,12 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sessionOptions = {
-    secret: 'process.env.SECRET',
+    secret: process.env.SECRET || 'wanderlust_fallback_secret_change_in_prod',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
 
     cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
     },

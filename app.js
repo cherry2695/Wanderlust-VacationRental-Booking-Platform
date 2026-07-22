@@ -292,16 +292,31 @@ app.get('/listings/:id',
             return res.redirect('/listings');
         }
 
-        // Geocode if geometry is missing for this listing
-        if (!listing.geometry || !Array.isArray(listing.geometry.coordinates) || listing.geometry.coordinates.length !== 2) {
+        // ── Detect listings that need geocoding ──────────────────────────────
+        // 1. Missing geometry entirely
+        // 2. Coordinates are exactly the old "New Delhi fallback" [77.209, 28.614]
+        //    (within 0.01° tolerance) — these were saved by old buggy code
+        const coords = listing.geometry && Array.isArray(listing.geometry.coordinates) &&
+                       listing.geometry.coordinates.length === 2
+                       ? listing.geometry.coordinates : null;
+
+        const isNewDelhiFallback = coords &&
+            Math.abs(coords[0] - 77.2090) < 0.01 &&
+            Math.abs(coords[1] - 28.6139) < 0.01;
+
+        const needsGeocode = !coords || isNewDelhiFallback;
+
+        if (needsGeocode) {
             const geo = await geocodeLocation(listing.location, listing.country);
             if (geo) {
                 listing.geometry = geo;
                 await listing.save();
+                console.log(`Auto-fixed geometry for: "${listing.title}" → [${geo.coordinates[1].toFixed(4)}, ${geo.coordinates[0].toFixed(4)}]`);
             } else {
                 console.warn(`Geocode on show failed for: "${listing.location}, ${listing.country}"`);
             }
         }
+
 
         const today = new Date();
         const minCheckIn = today.toISOString().split('T')[0];
@@ -477,13 +492,19 @@ app.put('/listings/:id',
             return res.redirect(`/listings/${id}`);
         }
 
+        // ── Capture OLD location BEFORE overwriting fields ─────────────────
+        // IMPORTANT: must happen before listing.location is updated below,
+        // otherwise locationChanged is always false.
+        const oldLocation = listing.location;
+        const oldCountry  = listing.country;
+
         // Update fields
-        listing.title = req.body.listing.title;
+        listing.title       = req.body.listing.title;
         listing.description = req.body.listing.description;
-        listing.price = req.body.listing.price;
-        listing.location = req.body.listing.location;
-        listing.country = req.body.listing.country;
-        listing.category = req.body.listing.category;
+        listing.price       = req.body.listing.price;
+        listing.location    = req.body.listing.location;
+        listing.country     = req.body.listing.country;
+        listing.category    = req.body.listing.category;
 
         if (req.file) {
             // Delete old image from Cloudinary if it's a cloudinary URL
@@ -497,24 +518,25 @@ app.put('/listings/:id',
             listing.image = { url: req.file.path, filename: req.file.filename };
         }
 
-        // Re-geocode ONLY if the location or country actually changed
-        const locationChanged = (
-            req.body.listing.location !== undefined &&
-            (listing.location !== req.body.listing.location ||
-             listing.country  !== req.body.listing.country)
-        );
+        // ── Re-geocode ONLY when location or country actually changed ───────
+        const newLocation = (req.body.listing.location || '').trim();
+        const newCountry  = (req.body.listing.country  || '').trim();
+        const locationChanged = newLocation &&
+            (oldLocation.trim() !== newLocation || oldCountry.trim() !== newCountry);
+
         if (locationChanged) {
-            const locationStr = (req.body.listing.location || '').trim();
-            const countryStr  = (req.body.listing.country  || '').trim();
-            const geometry = await geocodeLocation(locationStr, countryStr);
+            console.log(`Location changed: "${oldLocation}" → "${newLocation}", re-geocoding...`);
+            const geometry = await geocodeLocation(newLocation, newCountry);
             if (geometry) {
                 listing.geometry = geometry;
-                console.log(`Re-geocoded "${locationStr}, ${countryStr}"`);
+                console.log(`Re-geocoded "${newLocation}, ${newCountry}" → [${geometry.coordinates[1].toFixed(4)}, ${geometry.coordinates[0].toFixed(4)}]`);
             } else {
                 // Geocoding failed — preserve existing coordinates, do NOT overwrite.
-                console.warn(`Re-geocode failed for "${locationStr}, ${countryStr}". Keeping existing coordinates.`);
+                console.warn(`Re-geocode failed for "${newLocation}, ${newCountry}". Keeping existing coordinates.`);
+                req.flash('error', `Map could not be updated for "${newLocation}". Coordinates unchanged.`);
             }
         }
+
 
         // Normalize amenities
         if (req.body.listing && req.body.listing.amenities) {

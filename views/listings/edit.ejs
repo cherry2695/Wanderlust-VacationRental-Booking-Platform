@@ -101,8 +101,13 @@
                 >
                   <option value="Trending" <%= listing.category === 'Trending' ? 'selected' : '' %>>Trending</option>
                   <option value="Rooms" <%= listing.category === 'Rooms' ? 'selected' : '' %>>Rooms</option>
-                  <option value="Iconic Cities" <%= (listing.category === 'Iconic Cities' || listing.category === 'IconicCity') ? 'selected' : '' %>>Iconic City</option>
+                  <option value="Iconic Cities" <%= listing.category === 'Iconic Cities' ? 'selected' : '' %>>Iconic Cities</option>
                   <option value="Mountains" <%= listing.category === 'Mountains' ? 'selected' : '' %>>Mountains</option>
+                  <option value="Beach" <%= listing.category === 'Beach' ? 'selected' : '' %>>Beach</option>
+                  <option value="Camping" <%= listing.category === 'Camping' ? 'selected' : '' %>>Camping</option>
+                  <option value="Pools" <%= listing.category === 'Pools' ? 'selected' : '' %>>Pools</option>
+                  <option value="Farms" <%= listing.category === 'Farms' ? 'selected' : '' %>>Farms</option>
+                  <option value="Cabins" <%= listing.category === 'Cabins' ? 'selected' : '' %>>Cabins</option>
                 </select>
                 <label for="category">Category</label>
                 <div class="invalid-feedback">Please select a category.</div>
@@ -186,11 +191,15 @@
 <script>
   (function(){
     const suggestions = {
-      Mountains: ['fireplace','hiking','valley_view','hot_water'],
-      'Iconic Cities': ['elevator','workspace','smart_tv','air_conditioning'],
-      Beach: ['ocean_view','pool','bbq'],
+      Trending: ['wifi','kitchen','parking'],
       Rooms: ['wifi','kitchen','air_conditioning'],
-      Trending: ['wifi','kitchen','parking']
+      'Iconic Cities': ['elevator','workspace','smart_tv','air_conditioning'],
+      Mountains: ['fireplace','hiking','valley_view','hot_water'],
+      Beach: ['ocean_view','pool','bbq'],
+      Camping: ['fireplace','bbq','pet_friendly'],
+      Pools: ['pool','bbq','air_conditioning'],
+      Farms: ['pet_friendly','bbq','garden'],
+      Cabins: ['fireplace','hot_water','pet_friendly']
     };
 
     const categoryEl = document.getElementById('category');

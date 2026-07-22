@@ -94,8 +94,13 @@
                   <option value="" disabled selected>Select Category</option>
                   <option value="Trending">Trending</option>
                   <option value="Rooms">Rooms</option>
-                  <option value="Iconic Cities">Iconic City</option>
+                  <option value="Iconic Cities">Iconic Cities</option>
                   <option value="Mountains">Mountains</option>
+                  <option value="Beach">Beach</option>
+                  <option value="Camping">Camping</option>
+                  <option value="Pools">Pools</option>
+                  <option value="Farms">Farms</option>
+                  <option value="Cabins">Cabins</option>
                 </select>
                 <label for="category">Category</label>
                 <div class="invalid-feedback">Please select a category.</div>
@@ -179,11 +184,15 @@
 <script>
   (function(){
     const suggestions = {
-      Mountains: ['fireplace','hiking','valley_view','hot_water'],
-      'Iconic Cities': ['elevator','workspace','smart_tv','air_conditioning'],
-      Beach: ['ocean_view','pool','bbq'],
+      Trending: ['wifi','kitchen','parking'],
       Rooms: ['wifi','kitchen','air_conditioning'],
-      Trending: ['wifi','kitchen','parking']
+      'Iconic Cities': ['elevator','workspace','smart_tv','air_conditioning'],
+      Mountains: ['fireplace','hiking','valley_view','hot_water'],
+      Beach: ['ocean_view','pool','bbq'],
+      Camping: ['fireplace','bbq','pet_friendly'],
+      Pools: ['pool','bbq','air_conditioning'],
+      Farms: ['pet_friendly','bbq','garden'],
+      Cabins: ['fireplace','hot_water','pet_friendly']
     };
 
     const categoryEl = document.getElementById('category');

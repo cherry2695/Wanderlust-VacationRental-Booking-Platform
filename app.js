@@ -30,27 +30,39 @@ const upload = multer({ storage });
 
 
 // ================= GEOCODE HELPER (Nominatim / OpenStreetMap) =================
-// Free geocoding — no API key required. Respects Nominatim's 1 req/s policy.
+// Free geocoding — no API key required.
+// Returns a GeoJSON Point on success, or NULL on failure.
+// Callers must check for null and handle gracefully (do NOT fall back to New Delhi).
 async function geocodeLocation(locationStr, countryStr = '') {
+    if (!locationStr || !locationStr.trim()) return null;
     try {
         const query = encodeURIComponent(
-            countryStr ? `${locationStr}, ${countryStr}` : locationStr
+            countryStr ? `${locationStr.trim()}, ${countryStr.trim()}` : locationStr.trim()
         );
         const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`;
         const response = await fetch(url, {
-            headers: { 'User-Agent': 'WanderlustApp/1.0 (wanderlust@example.com)' }
+            headers: { 'User-Agent': 'WanderlustApp/1.0 (wanderlust@example.com)' },
+            signal: AbortSignal.timeout(8000) // 8-second timeout
         });
+        if (!response.ok) {
+            console.error('Geocode HTTP error:', response.status);
+            return null;
+        }
         const data = await response.json();
         if (data && data.length > 0) {
             const lon = parseFloat(data[0].lon);
             const lat = parseFloat(data[0].lat);
-            return { type: 'Point', coordinates: [lon, lat] };
+            if (!isNaN(lon) && !isNaN(lat)) {
+                console.log(`Geocoded "${locationStr}" → [${lat}, ${lon}]`);
+                return { type: 'Point', coordinates: [lon, lat] };
+            }
         }
+        console.warn(`Geocode: no results for "${locationStr}, ${countryStr}"`);
+        return null;
     } catch (e) {
         console.error('Geocode error:', e.message);
+        return null; // Do NOT fall back to New Delhi
     }
-    // Fallback: New Delhi
-    return { type: 'Point', coordinates: [77.2090, 28.6139] };
 }
 
 
@@ -228,12 +240,18 @@ app.post('/listings',
             };
         }
 
-        // Geocode provided location
-        try {
-            const geometry = await geocodeLocation(req.body.listing.location);
-            newListing.geometry = geometry;
-        } catch (e) {
-            newListing.geometry = { type: 'Point', coordinates: [77.2090, 28.6139] };
+        // Geocode the provided location + country
+        const locationStr = (req.body.listing.location || '').trim();
+        const countryStr  = (req.body.listing.country  || '').trim();
+        if (locationStr) {
+            const geometry = await geocodeLocation(locationStr, countryStr);
+            if (geometry) {
+                newListing.geometry = geometry;
+            } else {
+                // Geocoding failed — do not save wrong coordinates.
+                // Leave geometry empty; map.js will show a graceful fallback.
+                console.warn(`Geocode failed for new listing: "${locationStr}, ${countryStr}"`);
+            }
         }
 
         // Normalize amenities
@@ -274,14 +292,14 @@ app.get('/listings/:id',
             return res.redirect('/listings');
         }
 
-        // Geocode if missing
+        // Geocode if geometry is missing for this listing
         if (!listing.geometry || !Array.isArray(listing.geometry.coordinates) || listing.geometry.coordinates.length !== 2) {
-            try {
-                const geo = await geocodeLocation(listing.location);
+            const geo = await geocodeLocation(listing.location, listing.country);
+            if (geo) {
                 listing.geometry = geo;
                 await listing.save();
-            } catch (e) {
-                console.error('Geocode on show failed:', e);
+            } else {
+                console.warn(`Geocode on show failed for: "${listing.location}, ${listing.country}"`);
             }
         }
 
@@ -479,13 +497,22 @@ app.put('/listings/:id',
             listing.image = { url: req.file.path, filename: req.file.filename };
         }
 
-        // Re-geocode if location changed
-        if (req.body.listing && req.body.listing.location) {
-            try {
-                const geometry = await geocodeLocation(req.body.listing.location);
+        // Re-geocode ONLY if the location or country actually changed
+        const locationChanged = (
+            req.body.listing.location !== undefined &&
+            (listing.location !== req.body.listing.location ||
+             listing.country  !== req.body.listing.country)
+        );
+        if (locationChanged) {
+            const locationStr = (req.body.listing.location || '').trim();
+            const countryStr  = (req.body.listing.country  || '').trim();
+            const geometry = await geocodeLocation(locationStr, countryStr);
+            if (geometry) {
                 listing.geometry = geometry;
-            } catch (e) {
-                // ignore geocode errors
+                console.log(`Re-geocoded "${locationStr}, ${countryStr}"`);
+            } else {
+                // Geocoding failed — preserve existing coordinates, do NOT overwrite.
+                console.warn(`Re-geocode failed for "${locationStr}, ${countryStr}". Keeping existing coordinates.`);
             }
         }
 
